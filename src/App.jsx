@@ -1,23 +1,28 @@
-import Header from './components/Header.jsx'
-import Hero from './components/Hero.jsx'
-import Services from './components/Services.jsx'
-import About from './components/About.jsx'
-import CtaBand from './components/CtaBand.jsx'
-import Contact from './components/Contact.jsx'
-import Footer from './components/Footer.jsx'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
+import AuthProvider from './auth/AuthProvider.jsx'
+import RequireAuth from './auth/RequireAuth.jsx'
+import Landing from './pages/Landing.jsx'
+import Login from './pages/Login.jsx'
+import Panel from './pages/Panel.jsx'
 
 export default function App() {
   return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <Services />
-        <About />
-        <CtaBand />
-        <Contact />
-      </main>
-      <Footer />
-    </>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/panel"
+            element={
+              <RequireAuth>
+                <Panel />
+              </RequireAuth>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }

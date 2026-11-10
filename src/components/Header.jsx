@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
+import { useAuth } from '../auth/useAuth.js'
 import Logo from './Logo.jsx'
 import { navLinks } from '../data.js'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const { user } = useAuth()
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white/90 backdrop-blur-md">
@@ -24,9 +27,18 @@ export default function Header() {
               {link.label}
             </a>
           ))}
+          <Link to={user ? '/panel' : '/login'} className="text-[0.95rem] font-semibold text-accent sm:hidden">
+            {user ? 'Mi panel' : 'Ingresar'}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3.5">
+          <Link
+            to={user ? '/panel' : '/login'}
+            className="hidden text-[0.95rem] font-semibold text-primary transition-colors hover:text-accent sm:inline-block"
+          >
+            {user ? 'Mi panel' : 'Ingresar'}
+          </Link>
           <a href="#contacto" className="btn-primary hidden sm:inline-block">Agendar consulta</a>
           <button
             type="button"
