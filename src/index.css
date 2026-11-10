@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/* Colores de la marca: se usan como bg-primary, text-accent, etc. */
+@theme {
+  --color-primary: #1a3a5c;
+  --color-primary-dark: #122a44;
+  --color-accent: #2f80ed;
+  --color-accent-soft: #eaf2fd;
+  --color-ink: #1f2937;
+  --color-muted: #6b7280;
+  --color-bg-alt: #f6f8fb;
+  --color-line: #e5e9f0;
+
+  --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+  --shadow-soft: 0 10px 30px rgba(16, 42, 67, 0.08);
+  --shadow-lift: 0 20px 50px rgba(16, 42, 67, 0.14);
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply font-sans text-ink bg-white leading-relaxed antialiased; }
+}
+
+/* Clases propias reutilizables */
+@utility container-page {
+  @apply mx-auto w-full max-w-[1140px] px-6;
+}
+@utility section {
+  @apply py-15 md:py-21;
+}
+@utility btn {
+  @apply inline-block cursor-pointer rounded-full px-7 py-3.5 text-[0.95rem] font-semibold transition duration-200;
+}
+@utility btn-primary {
+  @apply btn bg-accent text-white shadow-[0_8px_20px_rgba(47,128,237,0.3)] hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(47,128,237,0.4)];
+}
+@utility btn-outline {
+  @apply btn border-2 border-line text-primary hover:border-accent hover:text-accent;
+}
