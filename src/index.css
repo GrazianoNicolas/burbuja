@@ -24,7 +24,7 @@
 
 /* Clases propias reutilizables */
 @utility container-page {
-  @apply mx-auto w-full max-w-[1140px] px-6;
+  @apply mx-auto w-full max-w-[1140px] px-4 sm:px-6;
 }
 @utility section {
   @apply py-15 md:py-21;

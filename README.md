@@ -17,18 +17,21 @@ npm run preview  # ver el build localmente
 - `src/index.css` — Tailwind y colores de la marca (`@theme`)
 - `src/data.js` — textos de servicios, stats, contacto, etc.
 - `src/components/` — una sección por componente (Header, Hero, Services, About, CtaBand, Contact, Footer)
-- `src/pages/` — páginas: `Landing` (`/`), `Login` (`/login`), `Panel` (`/panel`, privada)
+- `src/pages/` — páginas: `Landing` (`/`), `Login` (`/login`), `Register` (`/registro`),
+  `ForgotPassword` (`/recuperar`), `ResetPassword` (`/restablecer`), `Panel` (`/panel`, privada)
 - `src/auth/` — sesión de usuario
 
 ## Login
 
-Por ahora el login es **de prueba**: no hay servidor y la sesión se guarda en el navegador.
+Por ahora el login es **de prueba**: no hay servidor. Los usuarios, la sesión y los enlaces
+de recuperación se guardan en el navegador, y no se mandan emails (la pantalla muestra el enlace).
 
 - Usuario: `demo@nexo.com`
 - Contraseña: `demo1234`
 
 Para conectar un servicio real (Supabase, Firebase o una API propia) hay que reemplazar
-las funciones de `src/auth/authService.js` (`signIn`, `signOut`, `getCurrentUser`).
+las funciones de `src/auth/authService.js` (`signIn`, `signUp`, `signOut`, `getCurrentUser`,
+`requestPasswordReset`, `isResetTokenValid`, `resetPassword`) y poner `IS_DEMO = false`.
 
 > Al publicar el sitio, el hosting tiene que redirigir todas las rutas a `index.html`
 > para que `/login` y `/panel` funcionen al recargar.

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import Logo from '../components/Logo.jsx'
 import { useAuth } from '../auth/useAuth.js'
 
@@ -13,6 +13,7 @@ function formatDate(iso) {
 export default function Panel() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const isNew = useLocation().state?.welcome
   const firstName = user.name.split(' ')[0]
 
   async function handleSignOut() {
@@ -46,9 +47,11 @@ export default function Panel() {
 
       <main className="container-page py-10 md:py-14">
         <h1 className="mb-1.5 text-[clamp(1.7rem,3vw,2.2rem)] font-bold tracking-tight text-primary">
-          Hola, {firstName} 👋
+          {isNew ? `¡Bienvenido/a, ${firstName}!` : `Hola, ${firstName}`} 👋
         </h1>
-        <p className="mb-9 text-muted">Este es tu panel. Desde acá vas a poder seguir tus proyectos con Nexo.</p>
+        <p className="mb-9 text-muted">
+          {isNew ? 'Tu cuenta quedó creada. ' : ''}Este es tu panel. Desde acá vas a poder seguir tus proyectos con Nexo.
+        </p>
 
         <div className="grid gap-6 md:grid-cols-[1fr_1.4fr]">
           <section className="rounded-[14px] border border-line bg-white p-6 sm:p-7">
