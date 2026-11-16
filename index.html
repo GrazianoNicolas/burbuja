@@ -1,599 +1,1886 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-AR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Soluciones profesionales para tu negocio. Consultoría, estrategia y servicios a medida." />
-  <title>FrontarSoft — Servicios Profesionales</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FrontarSoft — Desarrollo de software a medida</title>
+  <meta name="description" content="Desarrollo de software a medida, aplicaciones web, integraciones y consultoría de sistemas desde Buenos Aires. Trato directo con quien desarrolla.">
+  <link rel="canonical" href="https://frontarsoft.com/">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://frontarsoft.com/">
+  <meta property="og:title" content="FrontarSoft — Desarrollo de software a medida">
+  <meta property="og:description" content="Software a medida, aplicaciones web, integraciones y consultoría de sistemas desde Buenos Aires, Argentina. Trato directo con quien desarrolla.">
+  <meta property="og:image" content="https://frontarsoft.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="FrontarSoft — Software a medida para cómo trabaja tu negocio.">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:site_name" content="FrontarSoft">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FrontarSoft — Desarrollo de software a medida">
+  <meta name="twitter:description" content="Software a medida, aplicaciones web, integraciones y consultoría de sistemas desde Buenos Aires, Argentina. Trato directo con quien desarrolla.">
+  <meta name="twitter:image" content="https://frontarsoft.com/og-image.png">
+  <meta name="twitter:image:alt" content="FrontarSoft — Software a medida para cómo trabaja tu negocio.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    /* ------------------------------------------------------------------
+       1. Design tokens
+       Editorial minimal: white canvas, near-black ink, one warm accent.
+       Dark surfaces remap the same semantic tokens through .theme-dark,
+       so buttons, rules and type work unchanged on ink.
+    ------------------------------------------------------------------ */
     :root {
-      --color-primary: #1a3a5c;
-      --color-primary-dark: #122a44;
-      --color-accent: #2f80ed;
-      --color-accent-soft: #eaf2fd;
-      --color-text: #1f2937;
-      --color-muted: #6b7280;
       --color-bg: #ffffff;
-      --color-bg-alt: #f6f8fb;
-      --color-border: #e5e9f0;
-      --radius: 14px;
-      --shadow: 0 10px 30px rgba(16, 42, 67, 0.08);
-      --shadow-lg: 0 20px 50px rgba(16, 42, 67, 0.14);
-      --max-width: 1140px;
-      --font: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      --color-ink: #111111;
+      --color-ink-soft: #525252;
+      --color-ink-muted: #6b6b6b;
+      --color-line: #e4e4e4;
+      --color-line-strong: #c9c9c9;
+      --color-field-border: #8a8a8a;
+      --color-accent: #c2410c;
+      --color-on-accent: #ffffff;
+      --color-success: #166534;
+      --color-error: #b91c1c;
+      --logo-accent: #c2410c;
+
+      --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+      /* 8px spacing scale */
+      --space-1: 0.5rem;
+      --space-2: 1rem;
+      --space-3: 1.5rem;
+      --space-4: 2rem;
+      --space-5: 2.5rem;
+      --space-6: 3rem;
+      --space-8: 4rem;
+
+      --container-max: 76rem;
+      --gutter: clamp(1.25rem, 4vw, 2.5rem);
+      --header-height: 4.5rem;
+      --radius: 4px;
+      --radius-lg: 8px;
+      --duration: 180ms;
+      --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    .theme-dark {
+      --color-bg: #111111;
+      --color-ink: #ffffff;
+      --color-ink-soft: #b8b8b8;
+      --color-ink-muted: #a3a3a3;
+      --color-line: rgba(255, 255, 255, 0.16);
+      --color-line-strong: rgba(255, 255, 255, 0.4);
+      --color-field-border: rgba(255, 255, 255, 0.55);
+      --color-accent: #f97316;
+      --color-on-accent: #111111;
+      --logo-accent: #f97316;
+      background: var(--color-bg);
+      color: var(--color-ink);
+    }
 
-    html { scroll-behavior: smooth; }
+    /* ------------------------------------------------------------------
+       2. Base
+    ------------------------------------------------------------------ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--header-height) + 1.5rem);
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
 
     body {
-      font-family: var(--font);
-      color: var(--color-text);
-      background: var(--color-bg);
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 1rem;
       line-height: 1.6;
+      color: var(--color-ink);
+      background: var(--color-bg);
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    a { text-decoration: none; color: inherit; }
+    h1, h2, h3, p, ul, ol, figure {
+      margin: 0;
+    }
 
+    a {
+      color: inherit;
+    }
+
+    svg {
+      display: block;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-ink);
+      outline-offset: 3px;
+    }
+
+    /* The skip link moves focus to the landmark itself; a landmark needs no focus ring. */
+    main:focus {
+      outline: 0;
+    }
+
+    ::selection {
+      background: var(--color-ink);
+      color: var(--color-bg);
+    }
+
+    .list-reset {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    .sprite {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    .icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      flex: 0 0 auto;
+    }
+
+    .logo-accent {
+      fill: var(--logo-accent);
+    }
+
+    /* ------------------------------------------------------------------
+       3. Layout
+    ------------------------------------------------------------------ */
     .container {
       width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 24px;
+      max-width: var(--container-max);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
     }
 
-    .btn {
-      display: inline-block;
-      padding: 14px 28px;
-      border-radius: 999px;
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--space-6);
+    }
+
+    .grid > * {
+      grid-column: 1 / -1;
+    }
+
+    @media (min-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        column-gap: var(--space-4);
+      }
+
+      .lg-left-4 { grid-column: 1 / span 4; }
+      .lg-left-5 { grid-column: 1 / span 5; }
+      .lg-left-6 { grid-column: 1 / span 6; }
+      .lg-right-7 { grid-column: 6 / span 7; }
+      .lg-right-6 { grid-column: 7 / span 6; }
+      .lg-right-5 { grid-column: 8 / span 5; }
+      .lg-col-7-2 { grid-column: 7 / span 2; }
+      .lg-col-9-4 { grid-column: 9 / span 4; }
+    }
+
+    .section {
+      padding-block: clamp(4rem, 8vw, 7.5rem);
+    }
+
+    .section-head {
+      display: grid;
+      gap: var(--space-3) var(--space-6);
+      margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    }
+
+    @media (min-width: 900px) {
+      .section-head {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        align-items: end;
+      }
+    }
+
+    .section-head .lead {
+      max-width: 34rem;
+    }
+
+    /* ------------------------------------------------------------------
+       4. Typography
+    ------------------------------------------------------------------ */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.8125rem;
       font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+      letter-spacing: 0.12em;
+      line-height: 1.4;
+      text-transform: uppercase;
+      color: var(--color-accent);
     }
-    .btn-primary {
-      background: var(--color-accent);
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(47, 128, 237, 0.3);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(47, 128, 237, 0.4); }
-    .btn-outline {
-      background: transparent;
-      color: var(--color-primary);
-      border: 2px solid var(--color-border);
-    }
-    .btn-outline:hover { border-color: var(--color-accent); color: var(--color-accent); }
 
-    /* ===== Header ===== */
-    header {
+    .eyebrow::before {
+      content: "";
+      flex: 0 0 auto;
+      width: 2rem;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .display {
+      font-size: clamp(2.5rem, 1.25rem + 3.6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1;
+      text-wrap: balance;
+    }
+
+    .heading-2 {
+      font-size: clamp(2rem, 1.25rem + 2.4vw, 3.25rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      text-wrap: balance;
+    }
+
+    .heading-3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.3;
+    }
+
+    .eyebrow + .heading-2 {
+      margin-top: var(--space-2);
+    }
+
+    .lead {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      color: var(--color-ink-soft);
+    }
+
+    /* ------------------------------------------------------------------
+       5. Buttons
+       Colors come from the semantic tokens, so the same classes render
+       as ink-on-white in light sections and white-on-ink inside .theme-dark.
+    ------------------------------------------------------------------ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.625rem;
+      min-height: 3rem;
+      padding: 0 1.375rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      line-height: 1;
+      text-decoration: none;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition:
+        background-color var(--duration) var(--ease),
+        color var(--duration) var(--ease),
+        border-color var(--duration) var(--ease),
+        transform var(--duration) var(--ease);
+    }
+
+    .btn .icon {
+      width: 1.125rem;
+      height: 1.125rem;
+      transition: transform var(--duration) var(--ease);
+    }
+
+    .btn:hover .icon {
+      transform: translateX(3px);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--color-ink);
+      color: var(--color-bg);
+      border-color: var(--color-ink);
+    }
+
+    .btn-primary:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-on-accent);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-ink);
+      border-color: var(--color-ink);
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-ink);
+      color: var(--color-bg);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: progress;
+      transform: none;
+    }
+
+    /* ------------------------------------------------------------------
+       6. Skip link
+    ------------------------------------------------------------------ */
+    .skip-link {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      padding: 0 1rem;
+      background: var(--color-ink);
+      color: var(--color-bg);
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: var(--radius);
+      transform: translateY(-200%);
+      transition: transform var(--duration) var(--ease);
+    }
+
+    /* Plain :focus (not :focus-visible) so the link also appears in Safari before 15.4. */
+    .skip-link:focus {
+      transform: translateY(0);
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+
+    /* ------------------------------------------------------------------
+       7. Header and navigation
+    ------------------------------------------------------------------ */
+    .site-header {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--color-border);
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.94);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--color-line);
+      transition: box-shadow var(--duration) var(--ease);
     }
-    .nav {
+
+    /* Separates the white header from white sections once the page scrolls. */
+    .site-header.is-scrolled {
+      box-shadow: 0 16px 32px -24px rgba(17, 17, 17, 0.28);
+    }
+
+    .header-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 72px;
+      gap: var(--space-3);
+      min-height: var(--header-height);
     }
-    .logo {
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      min-height: 2.75rem;
+      color: var(--color-ink);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 1.875rem;
+      height: 1.875rem;
+    }
+
+    .brand-name {
+      font-size: 1.125rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .brand-name-accent {
+      color: var(--color-accent);
+    }
+
+    .nav-list {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--color-primary);
-      letter-spacing: -0.02em;
+      gap: var(--space-4);
     }
-    .logo-mark {
-      width: 34px; height: 34px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
-      display: grid; place-items: center;
-      color: #fff; font-weight: 800;
+
+    .nav-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-ink-soft);
+      text-decoration: none;
+      transition: color var(--duration) var(--ease);
     }
-    .nav-links { display: flex; gap: 32px; align-items: center; }
-    .nav-links a { color: var(--color-muted); font-weight: 500; font-size: 0.95rem; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--color-primary); }
-    .nav-cta { display: flex; align-items: center; gap: 14px; }
 
-    .menu-toggle { display: none; background: none; border: none; cursor: pointer; font-size: 1.6rem; color: var(--color-primary); }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0.5rem;
+      height: 1px;
+      background: var(--color-ink);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--duration) var(--ease);
+    }
 
-    /* ===== Hero ===== */
+    .nav-link:hover {
+      color: var(--color-ink);
+    }
+
+    .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-cta {
+      margin-left: var(--space-2);
+    }
+
+    .nav-cta .btn {
+      min-height: 2.75rem;
+      padding: 0 1.125rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      margin-right: -0.5rem;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-radius: var(--radius);
+      color: var(--color-ink);
+      cursor: pointer;
+    }
+
+    .nav-toggle .icon-close {
+      display: none;
+    }
+
+    .nav-toggle.is-open .icon-menu {
+      display: none;
+    }
+
+    .nav-toggle.is-open .icon-close {
+      display: block;
+    }
+
+    @media (max-width: 899.98px) {
+      .site-nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-line);
+        padding: var(--space-1) var(--gutter) var(--space-4);
+        box-shadow: 0 24px 48px -24px rgba(17, 17, 17, 0.18);
+        /* Short landscape viewports: the panel scrolls instead of running off screen. */
+        max-height: calc(100vh - var(--header-height));
+        max-height: calc(100dvh - var(--header-height));
+        overflow-y: auto;
+      }
+
+      .site-nav.is-open {
+        display: block;
+      }
+
+      .nav-list {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      .nav-link {
+        width: 100%;
+        min-height: 3.25rem;
+        font-size: 1.0625rem;
+        border-bottom: 1px solid var(--color-line);
+      }
+
+      .nav-link::after {
+        display: none;
+      }
+
+      .nav-cta {
+        margin: var(--space-3) 0 0;
+      }
+
+      .nav-cta .btn {
+        width: 100%;
+        min-height: 3rem;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       8. Hero
+       Copy on the left, integration schematic on the right, facts strip
+       below both. On phones the schematic drops under the facts strip.
+    ------------------------------------------------------------------ */
     .hero {
-      background: radial-gradient(1200px 600px at 80% -10%, var(--color-accent-soft), transparent),
-                  linear-gradient(180deg, #fff 0%, var(--color-bg-alt) 100%);
-      padding: 96px 0 80px;
+      padding-block: clamp(3rem, 7vw, 6rem) clamp(3rem, 6vw, 5rem);
     }
+
+    /* The hero eyebrow is long: it only gets its leading rule once there is room. */
+    .hero .eyebrow::before {
+      display: none;
+    }
+
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 56px;
-      align-items: center;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "copy"
+        "facts"
+        "visual";
+      gap: clamp(2.5rem, 6vw, 4rem) var(--space-8);
+      margin-top: var(--space-4);
     }
-    .hero-badge {
-      display: inline-block;
-      background: var(--color-accent-soft);
-      color: var(--color-accent);
-      font-weight: 600;
-      font-size: 0.82rem;
-      padding: 7px 16px;
-      border-radius: 999px;
-      margin-bottom: 22px;
-    }
-    .hero h1 {
-      font-size: clamp(2.1rem, 4vw, 3.3rem);
-      line-height: 1.12;
-      letter-spacing: -0.025em;
-      color: var(--color-primary);
-      margin-bottom: 20px;
-    }
-    .hero p.lead {
-      font-size: 1.15rem;
-      color: var(--color-muted);
-      margin-bottom: 32px;
-      max-width: 520px;
-    }
-    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
-    .hero-visual {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
-      padding: 28px;
-      border: 1px solid var(--color-border);
-    }
-    .stat-row { display: flex; gap: 14px; margin-top: 22px; flex-wrap: wrap; }
-    .stat {
-      flex: 1;
-      min-width: 120px;
-      background: var(--color-bg-alt);
-      border-radius: 12px;
-      padding: 18px;
-      text-align: center;
-    }
-    .stat .num { font-size: 1.7rem; font-weight: 800; color: var(--color-accent); }
-    .stat .label { font-size: 0.82rem; color: var(--color-muted); }
-    .visual-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--color-border); }
-    .visual-row:last-child { border-bottom: none; }
-    .visual-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--color-accent-soft); display: grid; place-items: center; font-size: 1.2rem; }
-    .visual-row .vr-title { font-weight: 600; font-size: 0.95rem; }
-    .visual-row .vr-sub { font-size: 0.82rem; color: var(--color-muted); }
 
-    /* ===== Sections ===== */
-    section { padding: 84px 0; }
-    .section-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
-    .section-head .eyebrow {
+    .hero-copy {
+      grid-area: copy;
+    }
+
+    .hero-copy .lead {
+      margin-top: var(--space-4);
+      max-width: 34rem;
+    }
+
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .cta-group .btn {
+      flex: 1 1 100%;
+    }
+
+    @media (min-width: 640px) {
+      .hero .eyebrow::before {
+        display: block;
+      }
+
+      .cta-group .btn {
+        flex: 0 0 auto;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        grid-template-areas:
+          "copy visual"
+          "facts facts";
+        align-items: center;
+      }
+    }
+
+    .hero-visual {
+      grid-area: visual;
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-lg);
+      background: var(--color-bg);
+      overflow: hidden;
+    }
+
+    /* Stacked layout: the schematic keeps the copy column's width instead of filling tablet viewports. */
+    @media (max-width: 899.98px) {
+      .hero-visual {
+        max-width: 34rem;
+      }
+    }
+
+    .hero-visual-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--color-line);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      line-height: 1.4;
+      text-transform: uppercase;
+      color: var(--color-ink-muted);
+    }
+
+    .hero-visual-legend {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 480px) {
+      .hero-visual-legend {
+        display: inline-flex;
+      }
+    }
+
+    /* In the two-column hero the visual column is too narrow for the legend until about 1140px. */
+    @media (min-width: 900px) and (max-width: 1139.98px) {
+      .hero-visual-legend {
+        display: none;
+      }
+    }
+
+    .legend-swatch {
+      width: 1.25rem;
+      border-top: 2px dashed var(--color-accent);
+    }
+
+    .hero-visual-body {
+      padding: var(--space-2);
+      background-image: radial-gradient(var(--color-line) 1px, transparent 1.5px);
+      background-size: 20px 20px;
+    }
+
+    .schematic {
+      width: 100%;
+      height: auto;
+    }
+
+    /* Label sizes are chosen so they stay at or above 12px once the 400-unit viewBox scales down to phone widths. */
+    .schematic text {
+      font-family: var(--font-sans);
+      font-size: 20px;
+      font-weight: 500;
+      fill: var(--color-ink-soft);
+    }
+
+    .schematic .label-core {
+      font-size: 20px;
+      font-weight: 600;
+      fill: #ffffff;
+    }
+
+    .schematic .tag {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      fill: var(--color-accent);
+    }
+
+    /* Box and wire strokes use the field border gray: 3.45:1 on white, the non-text contrast minimum. */
+    .schematic .box {
+      fill: var(--color-bg);
+      stroke: var(--color-field-border);
+      stroke-width: 1.25;
+    }
+
+    .schematic .box-core {
+      fill: var(--color-ink);
+      stroke: var(--color-ink);
+    }
+
+    .schematic .wire {
+      fill: none;
+      stroke: var(--color-field-border);
+      stroke-width: 1.5;
+    }
+
+    .schematic .wire-flow {
+      stroke: var(--color-accent);
+      stroke-dasharray: 4 12;
+      /* Two cycles (4.8s) keep the auto-playing motion under the 5s mark of WCAG 2.2.2. */
+      animation: flow 2.4s linear 2;
+    }
+
+    .schematic .port {
+      fill: var(--color-bg);
+      stroke: var(--color-ink);
+      stroke-width: 1.5;
+    }
+
+    .schematic .node {
+      fill: var(--color-accent);
+    }
+
+    @keyframes flow {
+      to {
+        stroke-dashoffset: -32;
+      }
+    }
+
+    .facts {
+      grid-area: facts;
+      display: grid;
+      border-top: 1px solid var(--color-line);
+    }
+
+    .fact {
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .fact-value {
+      display: block;
+      font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .fact-label {
+      display: block;
+      margin-top: 0.375rem;
+      font-size: 0.9375rem;
+      color: var(--color-ink-muted);
+    }
+
+    /* Between 640px and 900px the third column gets extra room so every value stays on one line. */
+    @media (min-width: 640px) {
+      .facts {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 7fr);
+      }
+
+      .fact {
+        padding: var(--space-4) var(--space-3) var(--space-4) 0;
+        border-bottom: 0;
+      }
+
+      .fact + .fact {
+        padding-left: var(--space-3);
+        border-left: 1px solid var(--color-line);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .facts {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       9. Services
+    ------------------------------------------------------------------ */
+    .services {
+      display: grid;
+      gap: 0 var(--space-5);
+    }
+
+    @media (min-width: 640px) {
+      .services {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .services {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* Each card shares the grid's row tracks, so descriptions start at the same
+       height across a row however many lines the titles take at that width. */
+    @supports (grid-template-rows: subgrid) {
+      .service {
+        display: grid;
+        grid-template-rows: subgrid;
+        grid-row: span 3;
+      }
+    }
+
+    /* Without subgrid: reserve two title lines where three columns make titles wrap. */
+    @supports not (grid-template-rows: subgrid) {
+      @media (min-width: 1024px) {
+        .service-title {
+          min-height: 2.6em;
+        }
+      }
+    }
+
+    .service {
+      padding: var(--space-3) 0 var(--space-6);
+      border-top: 1px solid var(--color-line);
+      transition: border-color var(--duration) var(--ease);
+    }
+
+    .service:hover {
+      border-top-color: var(--color-ink);
+    }
+
+    .service-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      margin-bottom: var(--space-5);
+    }
+
+    .service-icon {
+      color: var(--color-ink);
+    }
+
+    .service-index {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--color-ink-muted);
+      font-variant-numeric: tabular-nums;
+      transition: color var(--duration) var(--ease);
+    }
+
+    .service:hover .service-index {
+      color: var(--color-accent);
+    }
+
+    .service-title {
+      margin-bottom: var(--space-2);
+    }
+
+    .service-text {
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      color: var(--color-ink-soft);
+    }
+
+    /* ------------------------------------------------------------------
+       10. Process
+    ------------------------------------------------------------------ */
+    @media (min-width: 900px) {
+      .process-intro {
+        position: sticky;
+        top: calc(var(--header-height) + var(--space-4));
+      }
+    }
+
+    .process-lead {
+      margin-top: var(--space-3);
+      max-width: 22rem;
+    }
+
+    .steps {
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      gap: var(--space-2) var(--space-3);
+      padding: var(--space-4) 0;
+      border-top: 1px solid var(--color-line);
+    }
+
+    @media (min-width: 640px) {
+      .step {
+        grid-template-columns: 5.5rem minmax(0, 1fr);
+        padding: var(--space-5) 0;
+      }
+    }
+
+    .step-index {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--color-accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .step-title {
+      font-size: 1.375rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-text {
+      max-width: 34rem;
+      color: var(--color-ink-soft);
+    }
+
+    /* ------------------------------------------------------------------
+       11. About
+    ------------------------------------------------------------------ */
+    .about-text {
+      margin-top: var(--space-4);
+      max-width: 36rem;
+    }
+
+    .about-text p {
+      font-size: 1.0625rem;
+      line-height: 1.7;
+      color: var(--color-ink-soft);
+    }
+
+    .about-text p + p {
+      margin-top: var(--space-3);
+    }
+
+    .about-text strong {
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    @media (min-width: 900px) {
+      .about-aside {
+        padding-top: 0.25rem;
+      }
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding-bottom: var(--space-3);
+      margin-bottom: var(--space-4);
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .profile-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: var(--radius-lg);
+      background: var(--color-ink);
+      color: var(--color-bg);
+      --logo-accent: #f97316;
+    }
+
+    .profile-mark .brand-mark {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    .profile-title {
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .profile-meta {
+      margin-top: 0.125rem;
+      font-size: 0.9375rem;
+      color: var(--color-ink-muted);
+    }
+
+    .about-aside-title {
+      margin-bottom: var(--space-3);
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-3) 0;
+      border-top: 1px solid var(--color-line);
+      color: var(--color-ink);
+    }
+
+    .checklist li:last-child {
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .check-icon {
+      color: var(--color-accent);
+      margin-top: 0.0625rem;
+    }
+
+    /* ------------------------------------------------------------------
+       12. CTA band (dark surface via .theme-dark)
+    ------------------------------------------------------------------ */
+    .band {
+      padding-block: clamp(3.5rem, 7vw, 6rem);
+    }
+
+    .band-grid {
+      display: grid;
+      gap: var(--space-4) var(--space-6);
+      align-items: end;
+    }
+
+    /* The heading gets the wider column; the buttons stack until the pair fits in a row beside it. */
+    @media (min-width: 900px) {
+      .band-grid {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      }
+
+      .band-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .band-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+    }
+
+    .band-title {
+      max-width: 22ch;
+    }
+
+    .band-text {
+      margin-top: var(--space-3);
+      max-width: 34rem;
+      font-size: 1.125rem;
+      color: var(--color-ink-soft);
+    }
+
+    .band-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .band-actions .btn {
+      flex: 1 1 100%;
+      overflow-wrap: anywhere;
+    }
+
+    @media (min-width: 640px) {
+      .band-actions .btn {
+        flex: 0 0 auto;
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       13. Contact
+    ------------------------------------------------------------------ */
+    .contact-grid {
+      row-gap: var(--space-8);
+    }
+
+    .contact-lead {
+      margin-top: var(--space-3);
+      max-width: 30rem;
+    }
+
+    .contact-channel {
+      margin-top: var(--space-6);
+    }
+
+    .contact-email {
+      display: inline-block;
+      min-height: 2.75rem;
+      padding: 0.5rem 0 0.25rem;
+      font-size: clamp(1.25rem, 0.25rem + 1.75vw, 1.75rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      color: var(--color-ink);
+      text-decoration: none;
+      border-bottom: 2px solid var(--color-accent);
+      overflow-wrap: anywhere;
+      transition: color var(--duration) var(--ease);
+    }
+
+    .contact-email:hover {
+      color: var(--color-accent);
+    }
+
+    .contact-location {
+      margin-top: var(--space-2);
+      font-size: 0.9375rem;
+      color: var(--color-ink-muted);
+    }
+
+    .after {
+      margin-top: var(--space-6);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-line);
+    }
+
+    .after-title {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-2);
+    }
+
+    .after-steps {
+      display: grid;
+      gap: 0.75rem;
+      padding-left: 1.75rem;
+      color: var(--color-ink-soft);
+    }
+
+    .after-steps li {
+      padding-left: 0.25rem;
+    }
+
+    .after-steps li::marker {
       color: var(--color-accent);
       font-weight: 700;
-      font-size: 0.82rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
     }
-    .section-head h2 {
-      font-size: clamp(1.8rem, 3vw, 2.5rem);
-      color: var(--color-primary);
-      letter-spacing: -0.02em;
-      margin: 10px 0 14px;
-    }
-    .section-head p { color: var(--color-muted); font-size: 1.05rem; }
 
-    /* ===== Services ===== */
-    .services { background: var(--color-bg-alt); }
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-    .card {
-      background: #fff;
-      border: 1px solid var(--color-border);
+    .after-steps strong {
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: var(--space-3);
+    }
+
+    .field label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      min-height: 3.25rem;
+      padding: 0.875rem 1rem;
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--color-ink);
+      background: var(--color-bg);
+      border: 1px solid var(--color-field-border);
       border-radius: var(--radius);
-      padding: 32px 28px;
-      transition: transform 0.18s ease, box-shadow 0.2s ease;
+      transition: border-color var(--duration) var(--ease);
     }
-    .card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
-    .card .c-icon {
-      width: 52px; height: 52px; border-radius: 13px;
-      background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
-      display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 20px;
+
+    .field textarea {
+      min-height: 10rem;
+      resize: vertical;
     }
-    .card h3 { font-size: 1.2rem; color: var(--color-primary); margin-bottom: 10px; }
-    .card p { color: var(--color-muted); font-size: 0.96rem; }
 
-    /* ===== About ===== */
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
-    .about h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--color-primary); margin-bottom: 18px; letter-spacing: -0.02em; }
-    .about p { color: var(--color-muted); margin-bottom: 16px; }
-    .checklist { list-style: none; margin-top: 22px; }
-    .checklist li { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; font-weight: 500; }
-    .check { color: var(--color-accent); font-weight: 800; }
-    .about-visual {
-      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-      border-radius: 20px;
-      padding: 44px;
-      color: #fff;
-      box-shadow: var(--shadow-lg);
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #767676;
+      opacity: 1;
     }
-    .about-visual blockquote { font-size: 1.25rem; line-height: 1.5; font-weight: 500; margin-bottom: 22px; }
-    .about-visual .author { display: flex; align-items: center; gap: 14px; }
-    .author-avatar { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.18); display: grid; place-items: center; font-weight: 700; }
-    .author .name { font-weight: 600; }
-    .author .role { font-size: 0.85rem; opacity: 0.8; }
 
-    /* ===== CTA band ===== */
-    .cta-band { background: var(--color-accent); }
-    .cta-band .container { text-align: center; }
-    .cta-band h2 { color: #fff; font-size: clamp(1.7rem, 3vw, 2.3rem); margin-bottom: 14px; letter-spacing: -0.02em; }
-    .cta-band p { color: rgba(255,255,255,0.9); font-size: 1.08rem; margin-bottom: 28px; }
-    .cta-band .btn-primary { background: #fff; color: var(--color-accent); box-shadow: 0 8px 22px rgba(0,0,0,0.18); }
-    .cta-band .btn-primary:hover { background: #f3f7ff; }
-
-    /* ===== Contact ===== */
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
-    .contact-info h3 { color: var(--color-primary); font-size: 1.3rem; margin-bottom: 18px; }
-    .contact-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
-    .contact-item .ci-icon { width: 44px; height: 44px; border-radius: 11px; background: var(--color-accent-soft); display: grid; place-items: center; font-size: 1.2rem; flex-shrink: 0; }
-    .contact-item .ci-label { font-size: 0.82rem; color: var(--color-muted); }
-    .contact-item .ci-value { font-weight: 600; color: var(--color-primary); }
-    form { background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 32px; }
-    .field { margin-bottom: 18px; }
-    .field label { display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 7px; color: var(--color-primary); }
-    .field input, .field textarea {
-      width: 100%; padding: 13px 15px; border: 1px solid var(--color-border);
-      border-radius: 10px; font-family: inherit; font-size: 0.95rem; background: #fff;
-      transition: border-color 0.15s, box-shadow 0.15s;
+    .field input:hover,
+    .field textarea:hover {
+      border-color: var(--color-ink-muted);
     }
-    .field input:focus, .field textarea:focus {
-      outline: none; border-color: var(--color-accent);
-      box-shadow: 0 0 0 3px rgba(47,128,237,0.15);
+
+    .field input:focus-visible,
+    .field textarea:focus-visible {
+      border-color: var(--color-ink);
+      outline-offset: 2px;
     }
-    .field textarea { resize: vertical; min-height: 110px; }
-    form .btn-primary { width: 100%; }
-    .form-note { font-size: 0.82rem; color: var(--color-muted); text-align: center; margin-top: 14px; }
-    .form-status { font-size: 0.9rem; text-align: center; margin-top: 14px; min-height: 1.2em; }
-    .form-status.is-success { color: #15803d; }
-    .form-status.is-error { color: #b91c1c; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    /* ===== Footer ===== */
-    footer { background: var(--color-primary-dark); color: rgba(255,255,255,0.8); padding: 56px 0 28px; }
-    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 36px; }
-    footer .logo { color: #fff; margin-bottom: 14px; }
-    footer p { font-size: 0.92rem; max-width: 320px; }
-    .footer-col h4 { color: #fff; font-size: 0.95rem; margin-bottom: 16px; }
-    .footer-col a { display: block; color: rgba(255,255,255,0.7); font-size: 0.92rem; margin-bottom: 10px; transition: color 0.15s; }
-    .footer-col a:hover { color: #fff; }
-    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.12); padding-top: 22px; text-align: center; font-size: 0.85rem; color: rgba(255,255,255,0.55); }
+    .contact-form .btn {
+      width: 100%;
+    }
 
-    /* ===== Responsive ===== */
-    @media (max-width: 900px) {
-      .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
-      .cards { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
-      .nav-links { display: none; }
-      .menu-toggle { display: block; }
-      .nav-links.open {
-        display: flex; flex-direction: column; gap: 18px;
-        position: absolute; top: 72px; left: 0; right: 0;
-        background: #fff; padding: 24px; border-bottom: 1px solid var(--color-border);
+    @media (min-width: 640px) {
+      .contact-form .btn {
+        width: auto;
+        min-width: 13rem;
       }
-      .hero { padding: 60px 0 56px; }
-      section { padding: 60px 0; }
+    }
+
+    /* Always rendered so the live region announces its first message. */
+    .form-status {
+      min-height: 1.5em;
+      margin-top: var(--space-2);
+      font-size: 0.9375rem;
+      font-weight: 500;
+    }
+
+    .form-status.is-success {
+      color: var(--color-success);
+    }
+
+    .form-status.is-error {
+      color: var(--color-error);
+    }
+
+    /* The error message links the fallback address. Vertical padding with matching
+       negative margins gives the link a 44px target without changing the line box. */
+    .form-status a {
+      display: inline-block;
+      padding-block: 0.625rem;
+      margin-block: -0.625rem;
+      color: inherit;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .form-note {
+      margin-top: var(--space-2);
+      font-size: 0.8125rem;
+      color: var(--color-ink-muted);
+    }
+
+    /* ------------------------------------------------------------------
+       14. Footer
+    ------------------------------------------------------------------ */
+    .site-footer {
+      border-top: 1px solid var(--color-line);
+      padding-block: var(--space-8) var(--space-4);
+    }
+
+    .footer-text {
+      margin-top: var(--space-3);
+      max-width: 28rem;
+      font-size: 0.9375rem;
+      color: var(--color-ink-soft);
+    }
+
+    .footer-label {
+      margin-bottom: var(--space-1);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-ink-muted);
+    }
+
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      font-size: 0.9375rem;
+      color: var(--color-ink-soft);
+      text-decoration: none;
+      transition: color var(--duration) var(--ease);
+    }
+
+    .footer-links a:hover {
+      color: var(--color-ink);
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+    }
+
+    .footer-contact a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--color-accent);
+      overflow-wrap: anywhere;
+    }
+
+    .footer-contact a:hover {
+      color: var(--color-accent);
+    }
+
+    .footer-location {
+      margin-top: var(--space-1);
+      font-size: 0.9375rem;
+      color: var(--color-ink-muted);
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-1) var(--space-3);
+      margin-top: var(--space-8);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-line);
+      font-size: 0.8125rem;
+      color: var(--color-ink-muted);
+    }
+
+    /* ------------------------------------------------------------------
+       15. Reduced motion
+    ------------------------------------------------------------------ */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+
+      .btn:hover .icon,
+      .btn:active {
+        transform: none;
+      }
     }
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
 
-  <!-- ===== Header ===== -->
-  <header>
-    <div class="container nav">
-      <a href="#inicio" class="logo">
-        <span class="logo-mark">F</span>
-        FrontarSoft
+  <!-- Logo mark: defined once, reused via <use href="#logo-mark"> -->
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="logo-mark" viewBox="0 0 64 64">
+      <rect x="6" y="6" width="12" height="52" rx="2" fill="currentColor"/>
+      <rect x="26" y="6" width="12" height="12" rx="2" fill="currentColor"/>
+      <rect class="logo-accent" x="46" y="6" width="12" height="12" rx="2" fill="#c2410c"/>
+      <rect x="26" y="26" width="12" height="12" rx="2" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#inicio" aria-label="FrontarSoft, ir al inicio">
+        <svg class="brand-mark" aria-hidden="true" focusable="false"><use href="#logo-mark"/></svg>
+        <span class="brand-name">Frontar<span class="brand-name-accent">Soft</span></span>
       </a>
-      <nav class="nav-links" id="navLinks">
-        <a href="#servicios">Servicios</a>
-        <a href="#nosotros">Nosotros</a>
-        <a href="#contacto">Contacto</a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menú">
+        <svg class="icon icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="icon icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Principal">
+        <ul class="nav-list list-reset" role="list">
+          <li><a class="nav-link" href="#servicios">Servicios</a></li>
+          <li><a class="nav-link" href="#proceso">Proceso</a></li>
+          <li><a class="nav-link" href="#nosotros">Nosotros</a></li>
+          <li><a class="nav-link" href="#contacto">Contacto</a></li>
+          <li class="nav-cta"><a class="btn btn-primary" href="#contacto">Contanos tu proyecto</a></li>
+        </ul>
       </nav>
-      <div class="nav-cta">
-        <a href="#contacto" class="btn btn-primary">Agendar consulta</a>
-        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">&#9776;</button>
-      </div>
     </div>
   </header>
 
-  <!-- ===== Hero ===== -->
-  <section class="hero" id="inicio">
-    <div class="container hero-grid">
-      <div>
-        <span class="hero-badge">Consultoría &amp; estrategia empresarial</span>
-        <h1>Impulsamos tu negocio con soluciones profesionales a medida</h1>
-        <p class="lead">
-          Acompañamos a empresas y emprendedores a tomar mejores decisiones, optimizar procesos
-          y crecer de forma sostenible. Resultados claros, sin vueltas.
-        </p>
-        <div class="hero-actions">
-          <a href="#contacto" class="btn btn-primary">Solicitar propuesta</a>
-          <a href="#servicios" class="btn btn-outline">Ver servicios</a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="visual-row">
-          <div class="visual-icon">📈</div>
-          <div>
-            <div class="vr-title">Crecimiento medible</div>
-            <div class="vr-sub">KPIs y reportes claros cada mes</div>
+  <main id="main" tabindex="-1">
+    <!-- Hero -->
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="container">
+        <p class="eyebrow"><span>Software y consultoría de sistemas <span class="nowrap">· Buenos Aires, Argentina</span></span></p>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h1 class="display" id="hero-title">Software a medida para cómo trabaja tu negocio.</h1>
+            <p class="lead">Analizamos tus procesos, diseñamos la solución y la desarrollamos con alcance, plazos y presupuesto claros. Hablás siempre con quien escribe el código.</p>
+            <div class="cta-group">
+              <a class="btn btn-primary" href="#contacto">
+                Contanos tu proyecto
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="btn btn-secondary" href="#servicios">Ver servicios</a>
+            </div>
           </div>
-        </div>
-        <div class="visual-row">
-          <div class="visual-icon">🤝</div>
-          <div>
-            <div class="vr-title">Acompañamiento cercano</div>
-            <div class="vr-sub">Un equipo dedicado a tu proyecto</div>
-          </div>
-        </div>
-        <div class="visual-row">
-          <div class="visual-icon">⚡</div>
-          <div>
-            <div class="vr-title">Implementación ágil</div>
-            <div class="vr-sub">Del diagnóstico a la acción</div>
-          </div>
-        </div>
-        <div class="stat-row">
-          <div class="stat"><div class="num">+120</div><div class="label">Proyectos</div></div>
-          <div class="stat"><div class="num">98%</div><div class="label">Satisfacción</div></div>
-          <div class="stat"><div class="num">12</div><div class="label">Años</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ===== Servicios ===== -->
-  <section class="services" id="servicios">
-    <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Qué hacemos</span>
-        <h2>Servicios pensados para tu crecimiento</h2>
-        <p>Combinamos experiencia, datos y un enfoque práctico para resolver los desafíos reales de tu organización.</p>
-      </div>
-      <div class="cards">
-        <div class="card">
-          <div class="c-icon">🧭</div>
-          <h3>Consultoría estratégica</h3>
-          <p>Diagnóstico, definición de objetivos y un plan de acción concreto para llevar tu negocio al siguiente nivel.</p>
-        </div>
-        <div class="card">
-          <div class="c-icon">⚙️</div>
-          <h3>Optimización de procesos</h3>
-          <p>Identificamos cuellos de botella y rediseñamos tus operaciones para ganar eficiencia y reducir costos.</p>
-        </div>
-        <div class="card">
-          <div class="c-icon">📊</div>
-          <h3>Análisis de datos</h3>
-          <p>Convertimos tu información en decisiones: tableros, métricas y reportes que realmente usás.</p>
-        </div>
-        <div class="card">
-          <div class="c-icon">🚀</div>
-          <h3>Transformación digital</h3>
-          <p>Te ayudamos a adoptar las herramientas correctas y digitalizar tus procesos sin fricción.</p>
-        </div>
-        <div class="card">
-          <div class="c-icon">💼</div>
-          <h3>Gestión de proyectos</h3>
-          <p>Planificamos, coordinamos y ejecutamos para que tus iniciativas lleguen a buen puerto, a tiempo.</p>
-        </div>
-        <div class="card">
-          <div class="c-icon">🎯</div>
-          <h3>Marketing &amp; ventas</h3>
-          <p>Estrategias para captar, convertir y fidelizar clientes con un enfoque medible y sostenible.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+          <!-- Integration schematic: a management system wired to the services it talks to.
+               Exposed to assistive tech as a single image; the inner SVG stays hidden. -->
+          <div class="hero-visual" role="img" aria-label="Esquema de integración: un sistema de gestión conectado por API a facturación y pagos, y por automatización a CRM y servicios externos.">
+            <div class="hero-visual-bar">
+              <span>Esquema de integración</span>
+              <span class="hero-visual-legend"><span class="legend-swatch"></span>Flujo de datos</span>
+            </div>
+            <div class="hero-visual-body">
+              <svg class="schematic" viewBox="0 0 400 340" aria-hidden="true" focusable="false">
+                <g>
+                  <path class="wire" d="M82 76v34h118v32"/>
+                  <path class="wire" d="M318 76v34H200v32"/>
+                  <path class="wire" d="M200 198v32H82v34"/>
+                  <path class="wire" d="M200 198v32h118v34"/>
+                  <path class="wire wire-flow" d="M82 76v34h118v32"/>
+                  <path class="wire wire-flow" d="M318 76v34H200v32"/>
+                  <path class="wire wire-flow" d="M200 198v32H82v34"/>
+                  <path class="wire wire-flow" d="M200 198v32h118v34"/>
+                </g>
+                <g>
+                  <rect class="box" x="12" y="20" width="140" height="56" rx="4"/>
+                  <text x="82" y="55" text-anchor="middle">Facturación</text>
+                  <rect class="box" x="248" y="20" width="140" height="56" rx="4"/>
+                  <text x="318" y="55" text-anchor="middle">Pagos</text>
+                  <rect class="box" x="12" y="264" width="140" height="56" rx="4"/>
+                  <text x="82" y="299" text-anchor="middle">CRM</text>
+                  <rect class="box" x="248" y="264" width="140" height="56" rx="4"/>
+                  <text x="318" y="288" text-anchor="middle"><tspan x="318">Servicios</tspan><tspan x="318" dy="22">externos</tspan></text>
+                  <rect class="box box-core" x="90" y="142" width="220" height="56" rx="4"/>
+                  <text class="label-core" x="200" y="176" text-anchor="middle">Sistema de gestión</text>
+                </g>
+                <g>
+                  <circle class="port" cx="82" cy="76" r="4"/>
+                  <circle class="port" cx="318" cy="76" r="4"/>
+                  <circle class="port" cx="82" cy="264" r="4"/>
+                  <circle class="port" cx="318" cy="264" r="4"/>
+                  <circle class="node" cx="200" cy="110" r="4.5"/>
+                  <circle class="node" cx="200" cy="230" r="4.5"/>
+                </g>
+                <text class="tag" x="200" y="101" text-anchor="middle">API</text>
+                <text class="tag" x="200" y="252" text-anchor="middle">AUTOMATIZACIÓN</text>
+              </svg>
+            </div>
+          </div>
 
-  <!-- ===== Nosotros ===== -->
-  <section class="about" id="nosotros">
-    <div class="container about-grid">
-      <div>
-        <h2>Un equipo que trabaja codo a codo con vos</h2>
-        <p>
-          En FrontarSoft creemos que cada negocio es único. Por eso no aplicamos recetas
-          genéricas: escuchamos, analizamos y diseñamos soluciones a la medida de tus objetivos.
-        </p>
-        <p>
-          Más de una década ayudando a empresas de distintos rubros nos enseñó que los mejores
-          resultados nacen de la cercanía, la transparencia y el compromiso.
-        </p>
-        <ul class="checklist">
-          <li><span class="check">✓</span> Diagnóstico inicial sin costo y sin compromiso</li>
-          <li><span class="check">✓</span> Propuestas claras, con plazos y entregables definidos</li>
-          <li><span class="check">✓</span> Reportes periódicos y comunicación directa</li>
-          <li><span class="check">✓</span> Enfoque 100% orientado a resultados</li>
+          <ul class="facts list-reset" role="list">
+            <li class="fact">
+              <span class="fact-value">5 años</span>
+              <span class="fact-label">de experiencia profesional</span>
+            </li>
+            <li class="fact">
+              <span class="fact-value">+20</span>
+              <span class="fact-label">proyectos entregados</span>
+            </li>
+            <li class="fact">
+              <span class="fact-value">Trato directo</span>
+              <span class="fact-label">con quien desarrolla, sin intermediarios</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="section" id="servicios" aria-labelledby="services-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Servicios</p>
+            <h2 class="heading-2" id="services-title">Lo que hacemos</h2>
+          </div>
+          <p class="lead">Seis servicios con un mismo criterio: entender el problema antes de proponer la solución y construir solo lo que tu negocio necesita.</p>
+        </div>
+
+        <ul class="services list-reset" role="list">
+          <li class="service">
+            <div class="service-meta">
+              <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M10 20V10"/></svg>
+              <span class="service-index">01</span>
+            </div>
+            <h3 class="heading-3 service-title">Desarrollo de software a medida</h3>
+            <p class="service-text">Sistemas de gestión, paneles internos y herramientas pensadas para cómo trabaja cada negocio, no al revés.</p>
+          </li>
+
+          <li class="service">
+            <div class="service-meta">
+              <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M6.5 6.5h.01M9.5 6.5h.01"/></svg>
+              <span class="service-index">02</span>
+            </div>
+            <h3 class="heading-3 service-title">Aplicaciones y sitios web</h3>
+            <p class="service-text">Webs institucionales, landing pages y aplicaciones web rápidas, modernas y responsive, pensadas para quien las usa.</p>
+          </li>
+
+          <li class="service">
+            <div class="service-meta">
+              <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4.5a3 3 0 0 1 3 3V14M14 17.5H9.5a3 3 0 0 1-3-3V10"/></svg>
+              <span class="service-index">03</span>
+            </div>
+            <h3 class="heading-3 service-title">Integraciones y APIs</h3>
+            <p class="service-text">Conectamos sistemas que no se hablan entre sí: facturación, pagos, CRMs y servicios externos trabajando como uno solo.</p>
+          </li>
+
+          <li class="service">
+            <div class="service-meta">
+              <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
+              <span class="service-index">04</span>
+            </div>
+            <h3 class="heading-3 service-title">Análisis y consultoría de sistemas</h3>
+            <p class="service-text">Relevamiento de procesos, diseño de la solución y definición de la arquitectura antes de escribir una sola línea de código.</p>
+          </li>
+
+          <li class="service">
+            <div class="service-meta">
+              <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 3l4 4-4 4"/><path d="M3 13v-2a4 4 0 0 1 4-4h14"/><path d="M7 13l-4 4 4 4"/><path d="M21 11v2a4 4 0 0 1-4 4H3"/></svg>
+              <span class="service-index">05</span>
+            </div>
+            <h3 class="heading-3 service-title">Automatización de procesos</h3>
+            <p class="service-text">Eliminamos tareas manuales y repetitivas con scripts, flujos e integraciones que corren solos y dejan registro.</p>
+          </li>
+
+          <li class="service">
+            <div class="service-meta">
+              <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h8M16 6h4M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              <span class="service-index">06</span>
+            </div>
+            <h3 class="heading-3 service-title">Mantenimiento y soporte evolutivo</h3>
+            <p class="service-text">Mejoras continuas, corrección de errores y acompañamiento después de la entrega, para que el sistema crezca con el negocio.</p>
+          </li>
         </ul>
       </div>
-      <div class="about-visual">
-        <blockquote>
-          "FrontarSoft nos ayudó a ordenar la operación y duplicar nuestra capacidad en menos de un año.
-          El acompañamiento fue clave."
-        </blockquote>
-        <div class="author">
-          <div class="author-avatar">MR</div>
-          <div>
-            <div class="name">María Rodríguez</div>
-            <div class="role">Directora — Grupo Lumen</div>
+    </section>
+
+    <!-- Process -->
+    <section class="section" id="proceso" aria-labelledby="process-title">
+      <div class="container">
+        <div class="grid">
+          <div class="lg-left-4">
+            <div class="process-intro">
+              <p class="eyebrow">Proceso</p>
+              <h2 class="heading-2" id="process-title">Cómo trabajamos</h2>
+              <p class="lead process-lead">Cuatro etapas con alcance definido y comunicación directa. Sabés en qué punto está el proyecto en cada momento.</p>
+            </div>
+          </div>
+
+          <ol class="steps list-reset lg-right-7" role="list">
+            <li class="step">
+              <span class="step-index">01</span>
+              <div>
+                <h3 class="step-title">Relevamiento</h3>
+                <p class="step-text">Entendemos el problema y el contexto: cómo trabajás hoy, qué te frena y qué resultado esperás obtener.</p>
+              </div>
+            </li>
+            <li class="step">
+              <span class="step-index">02</span>
+              <div>
+                <h3 class="step-title">Propuesta</h3>
+                <p class="step-text">Recibís una propuesta con alcance, plazos y presupuesto claros, sin letra chica.</p>
+              </div>
+            </li>
+            <li class="step">
+              <span class="step-index">03</span>
+              <div>
+                <h3 class="step-title">Desarrollo</h3>
+                <p class="step-text">Entregas parciales para que veas avances reales y comunicación directa en todo momento.</p>
+              </div>
+            </li>
+            <li class="step">
+              <span class="step-index">04</span>
+              <div>
+                <h3 class="step-title">Entrega y soporte</h3>
+                <p class="step-text">Puesta en producción, capacitación de quienes van a usar el sistema y soporte después de la entrega.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="nosotros" aria-labelledby="about-title">
+      <div class="container">
+        <div class="grid">
+          <div class="lg-left-6">
+            <p class="eyebrow">Nosotros</p>
+            <h2 class="heading-2" id="about-title">Quién está detrás de FrontarSoft</h2>
+            <div class="about-text">
+              <p>Al frente de FrontarSoft hay <strong>un analista de sistemas con 5 años de experiencia profesional y +20 proyectos entregados</strong>, con base en Buenos Aires, Argentina, que trabaja de forma remota.</p>
+              <p>La misma persona que releva tu problema diseña la solución y escribe el código. Sin intermediarios ni traducciones entre áreas: hablás directamente con quien va a construir el sistema.</p>
+            </div>
+          </div>
+
+          <div class="lg-right-5 about-aside">
+            <div class="profile">
+              <span class="profile-mark" aria-hidden="true">
+                <svg class="brand-mark" aria-hidden="true" focusable="false"><use href="#logo-mark"/></svg>
+              </span>
+              <div>
+                <p class="profile-title">Analista de sistemas</p>
+                <p class="profile-meta">Buenos Aires, Argentina <span class="nowrap">· Trabajo remoto</span></p>
+              </div>
+            </div>
+
+            <h3 class="heading-3 about-aside-title">Lo que podés esperar</h3>
+            <ul class="checklist list-reset" role="list">
+              <li>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+                <span>Trabajás de principio a fin con la misma persona, sin intermediarios.</span>
+              </li>
+              <li>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+                <span>Propuestas con alcance y plazos definidos antes de empezar.</span>
+              </li>
+              <li>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+                <span>Comunicación clara en cada etapa, sin tecnicismos innecesarios.</span>
+              </li>
+              <li>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+                <span>Al finalizar, recibís el código fuente y la documentación del proyecto.</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== CTA band ===== -->
-  <section class="cta-band">
-    <div class="container">
-      <h2>¿Listo para dar el próximo paso?</h2>
-      <p>Agendá una consulta gratuita y conversemos sobre cómo podemos ayudarte.</p>
-      <a href="#contacto" class="btn btn-primary">Agendar consulta gratuita</a>
-    </div>
-  </section>
-
-  <!-- ===== Contacto ===== -->
-  <section id="contacto">
-    <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Hablemos</span>
-        <h2>Contanos sobre tu proyecto</h2>
-        <p>Completá el formulario o escribinos por el chat. Te respondemos a la brevedad.</p>
-      </div>
-      <div class="contact-grid">
-        <div class="contact-info">
-          <h3>Información de contacto</h3>
-          <div class="contact-item">
-            <div class="ci-icon">📧</div>
-            <div>
-              <div class="ci-label">Email</div>
-              <div class="ci-value">consultas@frontarsoft.com</div>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="ci-icon">📞</div>
-            <div>
-              <div class="ci-label">Teléfono</div>
-              <div class="ci-value">+54 11 5555-1234</div>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="ci-icon">📍</div>
-            <div>
-              <div class="ci-label">Oficina</div>
-              <div class="ci-value">Av. Corrientes 1234, Buenos Aires</div>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="ci-icon">💬</div>
-            <div>
-              <div class="ci-label">Chat en vivo</div>
-              <div class="ci-value">Usá la burbuja abajo a la derecha</div>
-            </div>
-          </div>
-        </div>
-        <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
-          <input type="hidden" name="access_key" value="6f3fe35c-e1a5-42a8-8906-7f6cef5b6d92" />
-          <input type="hidden" name="subject" value="Nueva consulta desde frontarsoft.com" />
-          <input type="hidden" name="from_name" value="FrontarSoft Web" />
-          <input type="checkbox" name="botcheck" style="display: none" tabindex="-1" autocomplete="off" />
-          <div class="field">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="tu@email.com" required />
-          </div>
-          <div class="field">
-            <label for="mensaje">Mensaje</label>
-            <textarea id="mensaje" name="mensaje" placeholder="Contanos qué necesitás..." required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" id="contactSubmit">Enviar mensaje</button>
-          <p class="form-status" id="contactStatus" role="status" aria-live="polite"></p>
-          <p class="form-note">Nos comprometemos a proteger tus datos.</p>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Footer ===== -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
+    <!-- CTA band -->
+    <section class="band theme-dark" aria-labelledby="band-title">
+      <div class="container band-grid">
         <div>
-          <a href="#inicio" class="logo"><span class="logo-mark">F</span> FrontarSoft</a>
-          <p>Soluciones profesionales para empresas que quieren crecer con estrategia, datos y un equipo que las acompaña.</p>
+          <p class="eyebrow">Empecemos</p>
+          <h2 class="heading-2 band-title" id="band-title">¿Hay un proceso en tu negocio que todavía se hace a mano?</h2>
+          <p class="band-text">Contanos cómo trabajás hoy y vemos si tiene sentido resolverlo con software. Te respondemos por mail, sin compromiso.</p>
         </div>
-        <div class="footer-col">
-          <h4>Servicios</h4>
-          <a href="#servicios">Consultoría estratégica</a>
-          <a href="#servicios">Optimización de procesos</a>
-          <a href="#servicios">Análisis de datos</a>
-          <a href="#servicios">Transformación digital</a>
-        </div>
-        <div class="footer-col">
-          <h4>Empresa</h4>
-          <a href="#nosotros">Nosotros</a>
-          <a href="#contacto">Contacto</a>
-          <a href="#inicio">Inicio</a>
+        <div class="band-actions">
+          <a class="btn btn-primary" href="#contacto">
+            Escribinos
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-secondary" href="mailto:consultas@frontarsoft.com">consultas@frontarsoft.com</a>
         </div>
       </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section" id="contacto" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="grid contact-grid">
+          <div class="lg-left-5">
+            <p class="eyebrow">Contacto</p>
+            <h2 class="heading-2" id="contact-title">Hablemos de tu proyecto</h2>
+            <p class="lead contact-lead">Contanos qué necesitás, qué problema querés resolver o qué proceso te está llevando más tiempo del que debería. No hace falta que tengas el alcance definido.</p>
+
+            <div class="contact-channel">
+              <a class="contact-email" href="mailto:consultas@frontarsoft.com">consultas@frontarsoft.com</a>
+              <p class="contact-location">Buenos Aires, Argentina <span class="nowrap">· Trabajo remoto</span></p>
+            </div>
+
+            <div class="after">
+              <h3 class="after-title">Qué pasa después de escribirnos</h3>
+              <ol class="after-steps">
+                <li><strong>Te respondemos por mail</strong> con las primeras preguntas sobre tu consulta.</li>
+                <li><strong>Coordinamos una videollamada</strong> para entender el contexto y lo que esperás del sistema.</li>
+                <li><strong>Recibís una propuesta</strong> con alcance, plazos y presupuesto definidos.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="lg-right-6 contact-form">
+            <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+              <input type="hidden" name="access_key" value="6f3fe35c-e1a5-42a8-8906-7f6cef5b6d92" />
+              <input type="hidden" name="subject" value="Nueva consulta desde frontarsoft.com" />
+              <input type="hidden" name="from_name" value="FrontarSoft Web" />
+              <input type="checkbox" name="botcheck" style="display: none" tabindex="-1" autocomplete="off" />
+              <div class="field">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" autocomplete="name" required />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="tu@email.com" autocomplete="email" required />
+              </div>
+              <div class="field">
+                <label for="mensaje">Mensaje</label>
+                <textarea id="mensaje" name="mensaje" placeholder="Contanos qué necesitás..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" id="contactSubmit">Enviar mensaje</button>
+              <p class="form-status" id="contactStatus" role="status" aria-live="polite"></p>
+              <p class="form-note">Todos los campos son obligatorios. Usamos tus datos solo para responder a tu consulta.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="grid">
+        <div class="lg-left-5">
+          <a class="brand" href="#inicio" aria-label="FrontarSoft, volver al inicio">
+            <svg class="brand-mark" aria-hidden="true" focusable="false"><use href="#logo-mark"/></svg>
+            <span class="brand-name">Frontar<span class="brand-name-accent">Soft</span></span>
+          </a>
+          <p class="footer-text">Desarrollo de software a medida y consultoría de sistemas desde Buenos Aires, Argentina, en modalidad remota.</p>
+        </div>
+
+        <nav class="lg-col-7-2" aria-label="Pie de página">
+          <p class="footer-label">Secciones</p>
+          <ul class="footer-links list-reset" role="list">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#proceso">Proceso</a></li>
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </nav>
+
+        <div class="lg-col-9-4 footer-contact">
+          <p class="footer-label">Contacto</p>
+          <a href="mailto:consultas@frontarsoft.com">consultas@frontarsoft.com</a>
+          <p class="footer-location">Buenos Aires, Argentina <span class="nowrap">· Trabajo remoto</span></p>
+        </div>
+      </div>
+
       <div class="footer-bottom">
-        © 2026 FrontarSoft. Todos los derechos reservados.
+        <p>© <span id="copyright-year">2026</span> FrontarSoft. Todos los derechos reservados.</p>
+        <p>Software a medida y consultoría de sistemas.</p>
       </div>
     </div>
   </footer>
 
-  <!-- ===== Script: menú móvil ===== -->
   <script>
-    const toggle = document.getElementById('menuToggle');
-    const links = document.getElementById('navLinks');
-    toggle.addEventListener('click', () => links.classList.toggle('open'));
-    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
-  </script>
+    // Mobile navigation toggle and sticky-header shadow.
+    (function () {
+      const siteHeader = document.querySelector('.site-header');
+      const navToggle = document.querySelector('.nav-toggle');
+      const siteNav = document.getElementById('site-nav');
+      if (!siteHeader || !navToggle || !siteNav) return;
 
-  <!-- ===== Script: contact form (Web3Forms) ===== -->
-  <script>
-    const contactForm = document.getElementById('contactForm');
-    const contactSubmit = document.getElementById('contactSubmit');
-    const contactStatus = document.getElementById('contactStatus');
-
-    function setContactStatus(message, type) {
-      contactStatus.textContent = message;
-      contactStatus.className = 'form-status' + (type ? ' is-' + type : '');
-    }
-
-    contactForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      contactSubmit.disabled = true;
-      contactSubmit.textContent = 'Enviando...';
-      setContactStatus('', null);
-
-      try {
-        const response = await fetch(contactForm.action, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(contactForm),
-        });
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-          throw new Error(result.message || 'Request failed');
-        }
-
-        contactForm.reset();
-        setContactStatus('¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.', 'success');
-      } catch (error) {
-        setContactStatus('No pudimos enviar tu consulta. Escribinos a consultas@frontarsoft.com.', 'error');
-      } finally {
-        contactSubmit.disabled = false;
-        contactSubmit.textContent = 'Enviar mensaje';
+      function isNavOpen() {
+        return siteNav.classList.contains('is-open');
       }
-    });
+
+      function setNavOpen(isOpen) {
+        siteNav.classList.toggle('is-open', isOpen);
+        navToggle.classList.toggle('is-open', isOpen);
+        navToggle.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      navToggle.addEventListener('click', function () {
+        setNavOpen(!isNavOpen());
+      });
+
+      siteNav.addEventListener('click', function (event) {
+        if (event.target.closest('a')) setNavOpen(false);
+      });
+
+      // The open panel overlays the page, so it closes as soon as keyboard focus
+      // or a pointer press leaves the header: nothing can receive focus behind it.
+      siteHeader.addEventListener('focusout', function (event) {
+        const next = event.relatedTarget;
+        if (isNavOpen() && next && !siteHeader.contains(next)) setNavOpen(false);
+      });
+
+      document.addEventListener('pointerdown', function (event) {
+        if (isNavOpen() && !siteHeader.contains(event.target)) setNavOpen(false);
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && isNavOpen()) {
+          setNavOpen(false);
+          navToggle.focus();
+        }
+      });
+
+      const desktopQuery = window.matchMedia('(min-width: 900px)');
+      function closeNavOnDesktop(event) {
+        if (event.matches) setNavOpen(false);
+      }
+
+      // Safari 13 and older only implement the legacy addListener API.
+      if (typeof desktopQuery.addEventListener === 'function') {
+        desktopQuery.addEventListener('change', closeNavOnDesktop);
+      } else {
+        desktopQuery.addListener(closeNavOnDesktop);
+      }
+
+      function updateHeaderShadow() {
+        siteHeader.classList.toggle('is-scrolled', window.scrollY > 8);
+      }
+
+      updateHeaderShadow();
+      window.addEventListener('scroll', updateHeaderShadow, { passive: true });
+    })();
+
+    // Keeps the copyright year current without republishing the page.
+    (function () {
+      const yearElement = document.getElementById('copyright-year');
+      if (yearElement) yearElement.textContent = String(new Date().getFullYear());
+    })();
   </script>
 
-  <!-- ===== Burbuja de chat flamachat ===== -->
-<script>
-  window.flamachat = window.flamachat || function () {
-    (window.flamachat.q = window.flamachat.q || []).push(arguments);
-  };
-  (function () {
-    var s = document.createElement('script');
-    s.src = 'https://chat-widget-staging.flamachat.com/widget-loader.js';
-    s.async = true;
-    s.defer = true;
-    (document.head || document.documentElement).appendChild(s);
-  })();
-  flamachat('init', { widgetKey: 'wk_4bdb99fedf7b1b6767de0a84a601495282a82a80548cb8c8', apiBaseUrl: 'https://chat-api-staging.flamachat.com/', wsUrl: 'wss://chat-api-staging.flamachat.com/widget/ws' });
-</script>
+  <script>
+    // Contact form: posts to Web3Forms without leaving the page.
+    (function () {
+      const contactForm = document.getElementById('contactForm');
+      const contactSubmit = document.getElementById('contactSubmit');
+      const contactStatus = document.getElementById('contactStatus');
+      if (!contactForm || !contactSubmit || !contactStatus) return;
+
+      function setContactStatus(message, type) {
+        contactStatus.textContent = message;
+        contactStatus.className = 'form-status' + (type ? ' is-' + type : '');
+      }
+
+      // Turns the email address inside the status message into a mailto link,
+      // so the fallback channel can be used from the message itself.
+      function linkifyStatusEmail(email) {
+        const text = contactStatus.textContent;
+        const index = text.indexOf(email);
+        if (index === -1) return;
+        const link = document.createElement('a');
+        link.href = 'mailto:' + email;
+        link.textContent = email;
+        contactStatus.textContent = '';
+        contactStatus.append(text.slice(0, index), link, text.slice(index + email.length));
+      }
+
+      contactForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        contactSubmit.disabled = true;
+        contactSubmit.textContent = 'Enviando...';
+        // The live region announces the in-flight state; the disabled button cannot.
+        // No aria-busy on the form: it would silence this region, which lives inside it.
+        setContactStatus('Enviando...', null);
+
+        try {
+          const response = await fetch(contactForm.action, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: new FormData(contactForm),
+          });
+          const result = await response.json();
+
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Request failed');
+          }
+
+          contactForm.reset();
+          setContactStatus('¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.', 'success');
+        } catch (error) {
+          setContactStatus('No pudimos enviar tu consulta. Escribinos a consultas@frontarsoft.com.', 'error');
+          linkifyStatusEmail('consultas@frontarsoft.com');
+        } finally {
+          contactSubmit.disabled = false;
+          contactSubmit.textContent = 'Enviar mensaje';
+          // Disabling the button dropped keyboard focus to <body>; bring it back.
+          if (!document.activeElement || document.activeElement === document.body) {
+            contactSubmit.focus({ preventScroll: true });
+          }
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
