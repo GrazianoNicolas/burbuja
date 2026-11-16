@@ -33,6 +33,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <script data-cfasync="false">
+    // Flags script support before first paint, so motion styles may hide content that
+    // the motion script reveals later. If that script never finishes starting, the flag
+    // is withdrawn and everything shows exactly as it does without scripts.
+    // data-cfasync keeps Cloudflare Rocket Loader from deferring this past first paint.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      window.frontarMotionFailsafe = window.setTimeout(function () {
+        root.classList.remove('js');
+      }, 6000);
+    })();
+  </script>
+
   <style>
     /* ------------------------------------------------------------------
        1. Design tokens
@@ -72,6 +86,11 @@
       --radius-lg: 8px;
       --duration: 180ms;
       --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+      /* Entrance motion: slower and softer than the hover transitions above. */
+      --duration-reveal: 720ms;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --reveal-distance: 1.5rem;
     }
 
     .theme-dark {
@@ -476,6 +495,15 @@
       transform: scaleX(1);
     }
 
+    /* Set by the page script on the link of the section currently in view. */
+    .nav-link.is-active {
+      color: var(--color-ink);
+    }
+
+    .nav-link.is-active::after {
+      transform: scaleX(1);
+    }
+
     .nav-cta {
       margin-left: var(--space-2);
     }
@@ -514,8 +542,9 @@
     }
 
     @media (max-width: 899.98px) {
+      /* Closed state uses visibility instead of display so the panel can fade and
+         slide; visibility: hidden still keeps its links out of the tab order. */
       .site-nav {
-        display: none;
         position: absolute;
         top: 100%;
         left: 0;
@@ -528,10 +557,23 @@
         max-height: calc(100vh - var(--header-height));
         max-height: calc(100dvh - var(--header-height));
         overflow-y: auto;
+        visibility: hidden;
+        opacity: 0;
+        /* The fading panel must not catch taps meant for the content under it. */
+        pointer-events: none;
+        transform: translate3d(0, -0.5rem, 0);
+        transition:
+          opacity 220ms var(--ease),
+          transform 220ms var(--ease),
+          visibility 0s linear 220ms;
       }
 
       .site-nav.is-open {
-        display: block;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        transition-delay: 0s;
       }
 
       .nav-list {
@@ -551,6 +593,11 @@
         display: none;
       }
 
+      /* No underline in the stacked panel, so the current section reads through weight. */
+      .nav-link.is-active {
+        font-weight: 600;
+      }
+
       .nav-cta {
         margin: var(--space-3) 0 0;
       }
@@ -562,6 +609,35 @@
 
       .nav-toggle {
         display: inline-flex;
+      }
+
+      /* Without scripts the toggle cannot work: the menu stays open in the flow
+         under the brand and the header stops sticking, so it never hides content. */
+      html:not(.js) .site-header {
+        position: static;
+      }
+
+      html:not(.js) .header-inner {
+        flex-wrap: wrap;
+      }
+
+      html:not(.js) .nav-toggle {
+        display: none;
+      }
+
+      html:not(.js) .site-nav {
+        position: static;
+        flex: 1 1 100%;
+        max-height: none;
+        padding: 0 0 var(--space-3);
+        border-bottom: 0;
+        box-shadow: none;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        /* Falling back here (the failsafe) must not wait on the panel's fade. */
+        transition: none;
       }
     }
 
@@ -735,11 +811,10 @@
       stroke-width: 1.5;
     }
 
+    /* Static dashes by default; the motion section sets them flowing. */
     .schematic .wire-flow {
       stroke: var(--color-accent);
       stroke-dasharray: 4 12;
-      /* Two cycles (4.8s) keep the auto-playing motion under the 5s mark of WCAG 2.2.2. */
-      animation: flow 2.4s linear 2;
     }
 
     .schematic .port {
@@ -750,12 +825,6 @@
 
     .schematic .node {
       fill: var(--color-accent);
-    }
-
-    @keyframes flow {
-      to {
-        stroke-dashoffset: -32;
-      }
     }
 
     .facts {
@@ -852,6 +921,8 @@
       transition: border-color var(--duration) var(--ease);
     }
 
+    /* Used without the motion layer. Under .js this border is transparent and an
+       overlaid rule sweeps across instead (see section 15). */
     .service:hover {
       border-top-color: var(--color-ink);
     }
@@ -1340,7 +1411,276 @@
     }
 
     /* ------------------------------------------------------------------
-       15. Reduced motion
+       15. Motion
+       Progressive by construction: every hidden start state lives inside
+       the screen + no-preference query, and the script-driven ones also
+       need the .js flag set in <head>. So no content is ever hidden
+       without scripts, with reduced motion or in print. (Without scripts
+       the CSS-only hero entrance and schematic intro still play on load.)
+    ------------------------------------------------------------------ */
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 1.25rem, 0);
+      }
+    }
+
+    @keyframes item-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+    }
+
+    @keyframes draw-in {
+      from {
+        stroke-dashoffset: 1;
+      }
+    }
+
+    @keyframes line-in {
+      from {
+        transform: scaleX(0);
+      }
+    }
+
+    @keyframes status-in {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 0.25rem, 0);
+      }
+    }
+
+    /* Same movement under two names: one plays on load, the other loops on hover. */
+    @keyframes flow-intro {
+      to {
+        stroke-dashoffset: -32;
+      }
+    }
+
+    @keyframes flow-loop {
+      to {
+        stroke-dashoffset: -32;
+      }
+    }
+
+    @media screen and (prefers-reduced-motion: no-preference) {
+      /* --- Hero: one entrance on load, CSS only --- */
+      .hero .eyebrow,
+      .hero .display,
+      .hero-copy .lead,
+      .hero .cta-group,
+      .hero-visual,
+      .fact {
+        animation: rise-in 800ms var(--ease-out) backwards;
+      }
+
+      .hero .display { animation-delay: 80ms; }
+      .hero-copy .lead { animation-delay: 180ms; }
+      .hero .cta-group { animation-delay: 280ms; }
+      .hero-visual { animation-delay: 240ms; }
+      .fact:nth-child(1) { animation-delay: 440ms; }
+      .fact:nth-child(2) { animation-delay: 520ms; }
+      .fact:nth-child(3) { animation-delay: 600ms; }
+
+      /* The facts strip's top rule draws across instead of just appearing. */
+      .facts {
+        position: relative;
+        border-top-color: transparent;
+      }
+
+      .facts::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--color-line);
+        transform-origin: left center;
+        animation: line-in 900ms var(--ease-out) 380ms backwards;
+      }
+
+      /* --- Schematic: boxes settle, wires draw, then data flows ---
+         Automatic motion ends 4.4s after it starts, under the 5s mark of WCAG 2.2.2.
+         Hovering replays the flow for as long as the pointer stays. */
+      .schematic .schematic-item {
+        animation: item-in 600ms var(--ease-out) backwards;
+      }
+
+      .schematic .schematic-item:nth-child(1) { animation-delay: 250ms; }
+      .schematic .schematic-item:nth-child(2) { animation-delay: 330ms; }
+      .schematic .schematic-item:nth-child(3) { animation-delay: 410ms; }
+      .schematic .schematic-item:nth-child(4) { animation-delay: 490ms; }
+      .schematic .schematic-item:nth-child(5) { animation-delay: 100ms; }
+
+      /* pathLength="1" on these paths makes a dash of 1 cover the whole wire. */
+      .schematic .wire-base {
+        stroke-dasharray: 1;
+        animation: draw-in 600ms var(--ease) 600ms backwards;
+      }
+
+      .schematic .port,
+      .schematic .node {
+        animation: fade-in 300ms var(--ease) 1100ms backwards;
+      }
+
+      .schematic .tag {
+        animation: fade-in 300ms var(--ease) 1200ms backwards;
+      }
+
+      /* The paused loop sits under the intro: it takes over when the intro ends
+         and only runs while the visual is hovered. */
+      .schematic .wire-flow {
+        animation:
+          fade-in 300ms var(--ease) 1300ms backwards,
+          flow-loop 1.5s linear infinite paused,
+          flow-intro 1.5s linear 1400ms 2;
+      }
+
+      /* With scripts the schematic waits undrawn until it is on screen: on phones it
+         sits below the fold and would otherwise finish before anyone reaches it.
+         The motion script adds .is-playing; removing these rules starts the intro. */
+      .js .hero-visual:not(.is-playing) .schematic-item,
+      .js .hero-visual:not(.is-playing) .port,
+      .js .hero-visual:not(.is-playing) .node,
+      .js .hero-visual:not(.is-playing) .tag,
+      .js .hero-visual:not(.is-playing) .wire-flow {
+        opacity: 0;
+        animation: none;
+      }
+
+      .js .hero-visual:not(.is-playing) .wire-base {
+        stroke-dashoffset: 1;
+        animation: none;
+      }
+
+      /* --- Scroll reveals: the page script adds .is-visible on entry --- */
+      .js [data-reveal] {
+        opacity: 0;
+        transform: translate3d(0, var(--reveal-distance), 0);
+        transition:
+          opacity var(--duration-reveal) var(--ease-out) var(--reveal-delay, 0ms),
+          transform var(--duration-reveal) var(--ease-out) var(--reveal-delay, 0ms);
+      }
+
+      .js [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* Eyebrow rules grow from the left once their block is revealed. */
+      .js [data-reveal] .eyebrow::before,
+      .js .eyebrow[data-reveal]::before {
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 700ms var(--ease-out) calc(var(--reveal-delay, 0ms) + 200ms);
+      }
+
+      .js [data-reveal].is-visible .eyebrow::before,
+      .js .eyebrow[data-reveal].is-visible::before {
+        transform: scaleX(1);
+      }
+
+      /* Hairlines above services, steps and checklist items draw in with their block.
+         The real border turns transparent and an overlaid rule takes its place. */
+      .js .service[data-reveal],
+      .js .step[data-reveal],
+      .js .checklist li[data-reveal] {
+        position: relative;
+        border-top-color: transparent;
+      }
+
+      .js .service[data-reveal]::before,
+      .js .step[data-reveal]::before,
+      .js .checklist li[data-reveal]::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--color-line);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 900ms var(--ease-out) calc(var(--reveal-delay, 0ms) + 120ms);
+      }
+
+      .js .service[data-reveal].is-visible::before,
+      .js .step[data-reveal].is-visible::before,
+      .js .checklist li[data-reveal].is-visible::before {
+        transform: scaleX(1);
+      }
+
+      /* An ink rule waits over the service's hairline; hovering sweeps it across. */
+      .js .service[data-reveal]::after {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--color-ink);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 450ms var(--ease-out);
+      }
+
+      .service-icon,
+      .step-index {
+        transition: transform 300ms var(--ease-out);
+      }
+
+      /* Pointer-only effects: on touch screens :hover sticks after a tap. */
+      @media (hover: hover) {
+        .hero-visual:hover .wire-flow {
+          animation-play-state: running;
+        }
+
+        .js .service[data-reveal]:hover::after {
+          transform: scaleX(1);
+        }
+
+        .service:hover .service-icon {
+          transform: translate3d(0, -3px, 0);
+        }
+
+        .step:hover .step-index {
+          transform: translate3d(4px, 0, 0);
+        }
+      }
+
+      /* Check marks draw themselves a beat after their line appears. Opacity hides
+         the round line cap that a fully offset dash would otherwise leave behind. */
+      .js .checklist li[data-reveal] .check-icon path {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        opacity: 0;
+        transition:
+          stroke-dashoffset 500ms var(--ease) calc(var(--reveal-delay, 0ms) + 320ms),
+          opacity 1ms linear calc(var(--reveal-delay, 0ms) + 320ms);
+      }
+
+      .js .checklist li[data-reveal].is-visible .check-icon path {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+
+      /* Form feedback eases in instead of popping. */
+      .form-status.is-success,
+      .form-status.is-error {
+        animation: status-in 320ms var(--ease-out);
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       16. Reduced motion
     ------------------------------------------------------------------ */
     @media (prefers-reduced-motion: reduce) {
       html {
@@ -1427,26 +1767,36 @@
             <div class="hero-visual-body">
               <svg class="schematic" viewBox="0 0 400 340" aria-hidden="true" focusable="false">
                 <g>
-                  <path class="wire" d="M82 76v34h118v32"/>
-                  <path class="wire" d="M318 76v34H200v32"/>
-                  <path class="wire" d="M200 198v32H82v34"/>
-                  <path class="wire" d="M200 198v32h118v34"/>
+                  <path class="wire wire-base" pathLength="1" d="M82 76v34h118v32"/>
+                  <path class="wire wire-base" pathLength="1" d="M318 76v34H200v32"/>
+                  <path class="wire wire-base" pathLength="1" d="M200 198v32H82v34"/>
+                  <path class="wire wire-base" pathLength="1" d="M200 198v32h118v34"/>
                   <path class="wire wire-flow" d="M82 76v34h118v32"/>
                   <path class="wire wire-flow" d="M318 76v34H200v32"/>
                   <path class="wire wire-flow" d="M200 198v32H82v34"/>
                   <path class="wire wire-flow" d="M200 198v32h118v34"/>
                 </g>
                 <g>
-                  <rect class="box" x="12" y="20" width="140" height="56" rx="4"/>
-                  <text x="82" y="55" text-anchor="middle">Facturación</text>
-                  <rect class="box" x="248" y="20" width="140" height="56" rx="4"/>
-                  <text x="318" y="55" text-anchor="middle">Pagos</text>
-                  <rect class="box" x="12" y="264" width="140" height="56" rx="4"/>
-                  <text x="82" y="299" text-anchor="middle">CRM</text>
-                  <rect class="box" x="248" y="264" width="140" height="56" rx="4"/>
-                  <text x="318" y="288" text-anchor="middle"><tspan x="318">Servicios</tspan><tspan x="318" dy="22">externos</tspan></text>
-                  <rect class="box box-core" x="90" y="142" width="220" height="56" rx="4"/>
-                  <text class="label-core" x="200" y="176" text-anchor="middle">Sistema de gestión</text>
+                  <g class="schematic-item">
+                    <rect class="box" x="12" y="20" width="140" height="56" rx="4"/>
+                    <text x="82" y="55" text-anchor="middle">Facturación</text>
+                  </g>
+                  <g class="schematic-item">
+                    <rect class="box" x="248" y="20" width="140" height="56" rx="4"/>
+                    <text x="318" y="55" text-anchor="middle">Pagos</text>
+                  </g>
+                  <g class="schematic-item">
+                    <rect class="box" x="12" y="264" width="140" height="56" rx="4"/>
+                    <text x="82" y="299" text-anchor="middle">CRM</text>
+                  </g>
+                  <g class="schematic-item">
+                    <rect class="box" x="248" y="264" width="140" height="56" rx="4"/>
+                    <text x="318" y="288" text-anchor="middle"><tspan x="318">Servicios</tspan><tspan x="318" dy="22">externos</tspan></text>
+                  </g>
+                  <g class="schematic-item">
+                    <rect class="box box-core" x="90" y="142" width="220" height="56" rx="4"/>
+                    <text class="label-core" x="200" y="176" text-anchor="middle">Sistema de gestión</text>
+                  </g>
                 </g>
                 <g>
                   <circle class="port" cx="82" cy="76" r="4"/>
@@ -1484,15 +1834,15 @@
     <section class="section" id="servicios" aria-labelledby="services-title">
       <div class="container">
         <div class="section-head">
-          <div>
+          <div data-reveal>
             <p class="eyebrow">Servicios</p>
             <h2 class="heading-2" id="services-title">Lo que hacemos</h2>
           </div>
-          <p class="lead">Seis servicios con un mismo criterio: entender el problema antes de proponer la solución y construir solo lo que tu negocio necesita.</p>
+          <p class="lead" data-reveal>Seis servicios con un mismo criterio: entender el problema antes de proponer la solución y construir solo lo que tu negocio necesita.</p>
         </div>
 
         <ul class="services list-reset" role="list">
-          <li class="service">
+          <li class="service" data-reveal>
             <div class="service-meta">
               <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M10 20V10"/></svg>
               <span class="service-index">01</span>
@@ -1501,7 +1851,7 @@
             <p class="service-text">Sistemas de gestión, paneles internos y herramientas pensadas para cómo trabaja cada negocio, no al revés.</p>
           </li>
 
-          <li class="service">
+          <li class="service" data-reveal>
             <div class="service-meta">
               <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M6.5 6.5h.01M9.5 6.5h.01"/></svg>
               <span class="service-index">02</span>
@@ -1510,7 +1860,7 @@
             <p class="service-text">Webs institucionales, landing pages y aplicaciones web rápidas, modernas y responsive, pensadas para quien las usa.</p>
           </li>
 
-          <li class="service">
+          <li class="service" data-reveal>
             <div class="service-meta">
               <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4.5a3 3 0 0 1 3 3V14M14 17.5H9.5a3 3 0 0 1-3-3V10"/></svg>
               <span class="service-index">03</span>
@@ -1519,7 +1869,7 @@
             <p class="service-text">Conectamos sistemas que no se hablan entre sí: facturación, pagos, CRMs y servicios externos trabajando como uno solo.</p>
           </li>
 
-          <li class="service">
+          <li class="service" data-reveal>
             <div class="service-meta">
               <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
               <span class="service-index">04</span>
@@ -1528,7 +1878,7 @@
             <p class="service-text">Relevamiento de procesos, diseño de la solución y definición de la arquitectura antes de escribir una sola línea de código.</p>
           </li>
 
-          <li class="service">
+          <li class="service" data-reveal>
             <div class="service-meta">
               <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 3l4 4-4 4"/><path d="M3 13v-2a4 4 0 0 1 4-4h14"/><path d="M7 13l-4 4 4 4"/><path d="M21 11v2a4 4 0 0 1-4 4H3"/></svg>
               <span class="service-index">05</span>
@@ -1537,7 +1887,7 @@
             <p class="service-text">Eliminamos tareas manuales y repetitivas con scripts, flujos e integraciones que corren solos y dejan registro.</p>
           </li>
 
-          <li class="service">
+          <li class="service" data-reveal>
             <div class="service-meta">
               <svg class="icon service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h8M16 6h4M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>
               <span class="service-index">06</span>
@@ -1554,7 +1904,7 @@
       <div class="container">
         <div class="grid">
           <div class="lg-left-4">
-            <div class="process-intro">
+            <div class="process-intro" data-reveal>
               <p class="eyebrow">Proceso</p>
               <h2 class="heading-2" id="process-title">Cómo trabajamos</h2>
               <p class="lead process-lead">Cuatro etapas con alcance definido y comunicación directa. Sabés en qué punto está el proyecto en cada momento.</p>
@@ -1562,28 +1912,28 @@
           </div>
 
           <ol class="steps list-reset lg-right-7" role="list">
-            <li class="step">
+            <li class="step" data-reveal>
               <span class="step-index">01</span>
               <div>
                 <h3 class="step-title">Relevamiento</h3>
                 <p class="step-text">Entendemos el problema y el contexto: cómo trabajás hoy, qué te frena y qué resultado esperás obtener.</p>
               </div>
             </li>
-            <li class="step">
+            <li class="step" data-reveal>
               <span class="step-index">02</span>
               <div>
                 <h3 class="step-title">Propuesta</h3>
                 <p class="step-text">Recibís una propuesta con alcance, plazos y presupuesto claros, sin letra chica.</p>
               </div>
             </li>
-            <li class="step">
+            <li class="step" data-reveal>
               <span class="step-index">03</span>
               <div>
                 <h3 class="step-title">Desarrollo</h3>
                 <p class="step-text">Entregas parciales para que veas avances reales y comunicación directa en todo momento.</p>
               </div>
             </li>
-            <li class="step">
+            <li class="step" data-reveal>
               <span class="step-index">04</span>
               <div>
                 <h3 class="step-title">Entrega y soporte</h3>
@@ -1600,16 +1950,16 @@
       <div class="container">
         <div class="grid">
           <div class="lg-left-6">
-            <p class="eyebrow">Nosotros</p>
-            <h2 class="heading-2" id="about-title">Quién está detrás de FrontarSoft</h2>
-            <div class="about-text">
+            <p class="eyebrow" data-reveal>Nosotros</p>
+            <h2 class="heading-2" id="about-title" data-reveal>Quién está detrás de FrontarSoft</h2>
+            <div class="about-text" data-reveal>
               <p>Al frente de FrontarSoft hay <strong>un analista de sistemas con 5 años de experiencia profesional y +20 proyectos entregados</strong>, con base en Buenos Aires, Argentina, que trabaja de forma remota.</p>
               <p>La misma persona que releva tu problema diseña la solución y escribe el código. Sin intermediarios ni traducciones entre áreas: hablás directamente con quien va a construir el sistema.</p>
             </div>
           </div>
 
           <div class="lg-right-5 about-aside">
-            <div class="profile">
+            <div class="profile" data-reveal>
               <span class="profile-mark" aria-hidden="true">
                 <svg class="brand-mark" aria-hidden="true" focusable="false"><use href="#logo-mark"/></svg>
               </span>
@@ -1619,22 +1969,22 @@
               </div>
             </div>
 
-            <h3 class="heading-3 about-aside-title">Lo que podés esperar</h3>
+            <h3 class="heading-3 about-aside-title" data-reveal>Lo que podés esperar</h3>
             <ul class="checklist list-reset" role="list">
-              <li>
-                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+              <li data-reveal>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7"/></svg>
                 <span>Trabajás de principio a fin con la misma persona, sin intermediarios.</span>
               </li>
-              <li>
-                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+              <li data-reveal>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7"/></svg>
                 <span>Propuestas con alcance y plazos definidos antes de empezar.</span>
               </li>
-              <li>
-                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+              <li data-reveal>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7"/></svg>
                 <span>Comunicación clara en cada etapa, sin tecnicismos innecesarios.</span>
               </li>
-              <li>
-                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+              <li data-reveal>
+                <svg class="icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7"/></svg>
                 <span>Al finalizar, recibís el código fuente y la documentación del proyecto.</span>
               </li>
             </ul>
@@ -1646,12 +1996,12 @@
     <!-- CTA band -->
     <section class="band theme-dark" aria-labelledby="band-title">
       <div class="container band-grid">
-        <div>
+        <div data-reveal>
           <p class="eyebrow">Empecemos</p>
           <h2 class="heading-2 band-title" id="band-title">¿Hay un proceso en tu negocio que todavía se hace a mano?</h2>
           <p class="band-text">Contanos cómo trabajás hoy y vemos si tiene sentido resolverlo con software. Te respondemos por mail, sin compromiso.</p>
         </div>
-        <div class="band-actions">
+        <div class="band-actions" data-reveal>
           <a class="btn btn-primary" href="#contacto">
             Escribinos
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
@@ -1666,16 +2016,16 @@
       <div class="container">
         <div class="grid contact-grid">
           <div class="lg-left-5">
-            <p class="eyebrow">Contacto</p>
-            <h2 class="heading-2" id="contact-title">Hablemos de tu proyecto</h2>
-            <p class="lead contact-lead">Contanos qué necesitás, qué problema querés resolver o qué proceso te está llevando más tiempo del que debería. No hace falta que tengas el alcance definido.</p>
+            <p class="eyebrow" data-reveal>Contacto</p>
+            <h2 class="heading-2" id="contact-title" data-reveal>Hablemos de tu proyecto</h2>
+            <p class="lead contact-lead" data-reveal>Contanos qué necesitás, qué problema querés resolver o qué proceso te está llevando más tiempo del que debería. No hace falta que tengas el alcance definido.</p>
 
-            <div class="contact-channel">
+            <div class="contact-channel" data-reveal>
               <a class="contact-email" href="mailto:consultas@frontarsoft.com">consultas@frontarsoft.com</a>
               <p class="contact-location">Buenos Aires, Argentina <span class="nowrap">· Trabajo remoto</span></p>
             </div>
 
-            <div class="after">
+            <div class="after" data-reveal>
               <h3 class="after-title">Qué pasa después de escribirnos</h3>
               <ol class="after-steps">
                 <li><strong>Te respondemos por mail</strong> con las primeras preguntas sobre tu consulta.</li>
@@ -1685,7 +2035,7 @@
             </div>
           </div>
 
-          <div class="lg-right-6 contact-form">
+          <div class="lg-right-6 contact-form" data-reveal>
             <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
               <input type="hidden" name="access_key" value="6f3fe35c-e1a5-42a8-8906-7f6cef5b6d92" />
               <input type="hidden" name="subject" value="Nueva consulta desde frontarsoft.com" />
@@ -1716,7 +2066,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="grid">
-        <div class="lg-left-5">
+        <div class="lg-left-5" data-reveal>
           <a class="brand" href="#inicio" aria-label="FrontarSoft, volver al inicio">
             <svg class="brand-mark" aria-hidden="true" focusable="false"><use href="#logo-mark"/></svg>
             <span class="brand-name">Frontar<span class="brand-name-accent">Soft</span></span>
@@ -1724,7 +2074,7 @@
           <p class="footer-text">Desarrollo de software a medida y consultoría de sistemas desde Buenos Aires, Argentina, en modalidad remota.</p>
         </div>
 
-        <nav class="lg-col-7-2" aria-label="Pie de página">
+        <nav class="lg-col-7-2" aria-label="Pie de página" data-reveal>
           <p class="footer-label">Secciones</p>
           <ul class="footer-links list-reset" role="list">
             <li><a href="#inicio">Inicio</a></li>
@@ -1735,7 +2085,7 @@
           </ul>
         </nav>
 
-        <div class="lg-col-9-4 footer-contact">
+        <div class="lg-col-9-4 footer-contact" data-reveal>
           <p class="footer-label">Contacto</p>
           <a href="mailto:consultas@frontarsoft.com">consultas@frontarsoft.com</a>
           <p class="footer-location">Buenos Aires, Argentina <span class="nowrap">· Trabajo remoto</span></p>
@@ -1817,6 +2167,114 @@
     (function () {
       const yearElement = document.getElementById('copyright-year');
       if (yearElement) yearElement.textContent = String(new Date().getFullYear());
+    })();
+  </script>
+
+  <script data-cfasync="false">
+    // Motion: scroll reveals, the schematic's start and the current-section marker.
+    // It lives in its own script so a failure elsewhere cannot keep it from starting;
+    // if it never starts, the <head> failsafe shows everything instead.
+    (function () {
+      const supportsObserver = 'IntersectionObserver' in window;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // --- Current section ---
+      const sectionLinks = Array.from(document.querySelectorAll('.nav-link[href^="#"]'));
+
+      function setCurrentSection(sectionId) {
+        sectionLinks.forEach(function (link) {
+          const isCurrent = link.getAttribute('href') === '#' + sectionId;
+          link.classList.toggle('is-active', isCurrent);
+          if (isCurrent) {
+            link.setAttribute('aria-current', 'location');
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        });
+      }
+
+      if (supportsObserver && sectionLinks.length) {
+        // A zero-height band at 45% of the viewport: the section crossing it is the current one.
+        // Sections without a link (the hero, the call-to-action band) clear the marker.
+        const sectionObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) setCurrentSection(entry.target.id);
+          });
+        }, { rootMargin: '-45% 0px -55% 0px', threshold: 0 });
+
+        document.querySelectorAll('main > section').forEach(function (section) {
+          sectionObserver.observe(section);
+        });
+      }
+
+      // --- Schematic: its intro starts once it is actually on screen ---
+      const heroVisual = document.querySelector('.hero-visual');
+
+      if (heroVisual) {
+        if (!supportsObserver || prefersReducedMotion) {
+          heroVisual.classList.add('is-playing');
+        } else {
+          const visualObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              heroVisual.classList.add('is-playing');
+              visualObserver.disconnect();
+            });
+          }, { threshold: 0.2 });
+
+          visualObserver.observe(heroVisual);
+        }
+      }
+
+      // --- Scroll reveals ---
+      const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
+
+      if (!supportsObserver || prefersReducedMotion) {
+        revealItems.forEach(function (item) {
+          item.classList.add('is-visible');
+        });
+      } else {
+        const STAGGER_MS = 70;
+        const MAX_STAGGER_STEPS = 6;
+
+        // Items that enter together are revealed one after another, in document order.
+        const revealObserver = new IntersectionObserver(function (entries) {
+          let step = 0;
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            const delay = Math.min(step, MAX_STAGGER_STEPS) * STAGGER_MS;
+            entry.target.style.setProperty('--reveal-delay', delay + 'ms');
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+            step += 1;
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+        revealItems.forEach(function (item) {
+          revealObserver.observe(item);
+        });
+
+        // Safety net: anything still hidden when the page bottom is on screen shows at once.
+        // Checked on scroll, on resize and once now, for pages too short to scroll at all.
+        function revealRemainingAtPageEnd() {
+          const reachedEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+          if (!reachedEnd) return;
+          revealItems.forEach(function (item) {
+            if (item.classList.contains('is-visible')) return;
+            item.classList.add('is-visible');
+            revealObserver.unobserve(item);
+          });
+          window.removeEventListener('scroll', revealRemainingAtPageEnd);
+          window.removeEventListener('resize', revealRemainingAtPageEnd);
+        }
+
+        window.addEventListener('scroll', revealRemainingAtPageEnd, { passive: true });
+        window.addEventListener('resize', revealRemainingAtPageEnd, { passive: true });
+        revealRemainingAtPageEnd();
+      }
+
+      // Started cleanly: keep the .js flag that the <head> script set.
+      window.clearTimeout(window.frontarMotionFailsafe);
     })();
   </script>
 
