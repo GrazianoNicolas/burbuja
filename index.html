@@ -253,6 +253,10 @@
     .field textarea { resize: vertical; min-height: 110px; }
     form .btn-primary { width: 100%; }
     .form-note { font-size: 0.82rem; color: var(--color-muted); text-align: center; margin-top: 14px; }
+    .form-status { font-size: 0.9rem; text-align: center; margin-top: 14px; min-height: 1.2em; }
+    .form-status.is-success { color: #15803d; }
+    .form-status.is-error { color: #b91c1c; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     /* ===== Footer ===== */
     footer { background: var(--color-primary-dark); color: rgba(255,255,255,0.8); padding: 56px 0 28px; }
@@ -476,7 +480,11 @@
             </div>
           </div>
         </div>
-        <form onsubmit="event.preventDefault(); this.reset(); alert('¡Gracias! Te contactaremos pronto.');">
+        <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="6f3fe35c-e1a5-42a8-8906-7f6cef5b6d92" />
+          <input type="hidden" name="subject" value="Nueva consulta desde frontarsoft.com" />
+          <input type="hidden" name="from_name" value="FrontarSoft Web" />
+          <input type="checkbox" name="botcheck" style="display: none" tabindex="-1" autocomplete="off" />
           <div class="field">
             <label for="nombre">Nombre</label>
             <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
@@ -489,7 +497,8 @@
             <label for="mensaje">Mensaje</label>
             <textarea id="mensaje" name="mensaje" placeholder="Contanos qué necesitás..." required></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+          <button type="submit" class="btn btn-primary" id="contactSubmit">Enviar mensaje</button>
+          <p class="form-status" id="contactStatus" role="status" aria-live="polite"></p>
           <p class="form-note">Nos comprometemos a proteger tus datos.</p>
         </form>
       </div>
@@ -530,6 +539,46 @@
     const links = document.getElementById('navLinks');
     toggle.addEventListener('click', () => links.classList.toggle('open'));
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+  </script>
+
+  <!-- ===== Script: contact form (Web3Forms) ===== -->
+  <script>
+    const contactForm = document.getElementById('contactForm');
+    const contactSubmit = document.getElementById('contactSubmit');
+    const contactStatus = document.getElementById('contactStatus');
+
+    function setContactStatus(message, type) {
+      contactStatus.textContent = message;
+      contactStatus.className = 'form-status' + (type ? ' is-' + type : '');
+    }
+
+    contactForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      contactSubmit.disabled = true;
+      contactSubmit.textContent = 'Enviando...';
+      setContactStatus('', null);
+
+      try {
+        const response = await fetch(contactForm.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(contactForm),
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || 'Request failed');
+        }
+
+        contactForm.reset();
+        setContactStatus('¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.', 'success');
+      } catch (error) {
+        setContactStatus('No pudimos enviar tu consulta. Escribinos a consultas@frontarsoft.com.', 'error');
+      } finally {
+        contactSubmit.disabled = false;
+        contactSubmit.textContent = 'Enviar mensaje';
+      }
+    });
   </script>
 
   <!-- ===== Burbuja de chat flamachat ===== -->
